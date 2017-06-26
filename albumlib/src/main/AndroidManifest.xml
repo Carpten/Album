@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ysq.album">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application>
+
+        <activity
+            android:name=".activity.AlbumActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/AlbumTheme" />
+
+        <activity
+            android:name=".activity.AlbumPreviewActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/AlbumPreviewTheme" />
+
+    </application>
+
+</manifest>
