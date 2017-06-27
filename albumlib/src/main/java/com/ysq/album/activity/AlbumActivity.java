@@ -2,6 +2,7 @@ package com.ysq.album.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +34,7 @@ import com.ysq.album.other.AlbumPicker;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -60,6 +63,7 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
     private MaterialDialog mBucketDialog;
 
     private int mMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +183,32 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
                 finish();
                 break;
         }
+    }
+
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            int position = data.getIntExtra(AlbumPreviewActivity.ARG_INDEX, 0);
+            setCallback(position);
+        }
+    }
+
+    @TargetApi(21)
+    private void setCallback(final int position) {
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                AlbumAdapter0.VH viewHolder = (AlbumAdapter0.VH) mRecyclerView.findViewHolderForAdapterPosition(position);
+                if (names != null && sharedElements != null && viewHolder != null) {
+                    names.clear();
+                    sharedElements.clear();
+                    View view = viewHolder.imageView;
+                    names.add(view.getTransitionName());
+                    sharedElements.put(view.getTransitionName(), view);
+                }
+            }
+        });
     }
 
 

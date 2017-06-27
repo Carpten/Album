@@ -3,6 +3,7 @@ package com.ysq.album.adapter;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
@@ -62,7 +63,8 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
         intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
         intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
         String tag = (String) v.getTag(R.id.tag_transition_name);
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mAlbumActivity, v,tag );
+        mAlbumActivity.setExitSharedElementCallback((SharedElementCallback) null);
+        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mAlbumActivity, v, tag);
         mAlbumActivity.startActivity(intent, activityOptions.toBundle());
     }
 
@@ -72,8 +74,8 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
     }
 
 
-    private class VH extends RecyclerView.ViewHolder {
-        ImageView imageView;
+    public class VH extends RecyclerView.ViewHolder {
+        public ImageView imageView;
 
         VH(View itemView) {
             super(itemView);

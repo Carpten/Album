@@ -1,11 +1,12 @@
 package com.ysq.album.activity;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,11 +16,15 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.ysq.album.R;
 import com.ysq.album.bean.ImageBean;
 
-import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: yangshuiqiang
@@ -30,13 +35,18 @@ import java.util.List;
 public class AlbumPreviewActivity extends AppCompatActivity {
 
     public static final String ARG_BUCKET_INDEX = "ARG_BUCKET_INDEX";
+
     public static final String ARG_INDEX = "ARG_INDEX";
+
+    private static final int DEFAULT_SAMPLE_SIZE = 2;
 
     private List<ImageBean> mImageBeen;
 
-    private int mPicW, mPicH;
-
     private int mBucketIndex, mIndex;
+
+    private int mActivityWidth, mActivityHeight;
+
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,10 @@ public class AlbumPreviewActivity extends AppCompatActivity {
             postponeEnterTransition();
         }
         setContentView(R.layout.ysq_activity_album_preview);
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mActivityWidth = dm.widthPixels;
+        mActivityHeight = dm.heightPixels;
         mBucketIndex = getIntent().getIntExtra(ARG_BUCKET_INDEX, 0);
         mIndex = getIntent().getIntExtra(ARG_INDEX, 0);
         mImageBeen = AlbumActivity.albumPicker.getBuckets().get(mBucketIndex).getImageBeen();
@@ -52,18 +66,10 @@ public class AlbumPreviewActivity extends AppCompatActivity {
     }
 
 
-    private void readPicSize() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mImageBeen.get(getIntent().getIntExtra(ARG_INDEX, 0)).getImage_path(), options);
-        mPicW = options.outWidth;
-        mPicH = options.outHeight;
-    }
-
     private void setupViewPager() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(mPreviewAdapter);
-        viewPager.setCurrentItem(mIndex);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(mPreviewAdapter);
+        mViewPager.setCurrentItem(mIndex);
     }
 
     private PagerAdapter mPreviewAdapter = new PagerAdapter() {
@@ -78,23 +84,27 @@ public class AlbumPreviewActivity extends AppCompatActivity {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = new ImageView(container.getContext());
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setImageURI(Uri.fromFile(new File(mImageBeen.get(position).getImage_path())));
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        public Object instantiateItem(ViewGroup container, final int position) {
+            final ImageView photoView = new ImageView(AlbumPreviewActivity.this);
+            photoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            String transitionName = container.getContext().getString(R.string.ysq_transition_name, position);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                String transitionName = container.getContext().getString(R.string.ysq_transition_name, position);
-                imageView.setTransitionName(transitionName);
-                imageView.setTag(transitionName);
-                // TODO: 2017/6/26
-                if (position == mIndex)
-                    setStartPostTransition(imageView);
-
+                photoView.setTransitionName(transitionName);
             }
-            container.addView(imageView);
-            return imageView;
+            photoView.setTag(position);
+            Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path()).asBitmap().override(mActivityWidth, mActivityHeight)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            photoView.setImageBitmap(resource);
+                            if (position == mIndex)
+                                setStartPostTransition(photoView);
+                        }
+                    });
+
+            container.addView(photoView);
+            return photoView;
         }
 
         @Override
@@ -102,6 +112,31 @@ public class AlbumPreviewActivity extends AppCompatActivity {
             container.removeView((View) object);
         }
     };
+
+
+    @Override
+    public void finishAfterTransition() {
+        int currentItem = mViewPager.getCurrentItem();
+        Intent intent = new Intent();
+        intent.putExtra(ARG_INDEX, currentItem);
+        setResult(RESULT_OK, intent);
+        View view = mViewPager.findViewWithTag(currentItem);
+        setSharedElementCallback(view);
+        super.finishAfterTransition();
+    }
+
+    @TargetApi(21)
+    private void setSharedElementCallback(final View view) {
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                names.clear();
+                sharedElements.clear();
+                names.add(view.getTransitionName());
+                sharedElements.put(view.getTransitionName(), view);
+            }
+        });
+    }
 
 
     @TargetApi(21)
@@ -118,24 +153,26 @@ public class AlbumPreviewActivity extends AppCompatActivity {
     }
 
 
-    private Bitmap getThumbnailPic() {
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int inSampleSize = 8;
+    private Bitmap getThumbnailPic(int position) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mImageBeen.get(position).getImage_path(), options);
+        int picW = options.outWidth;
+        int picH = options.outHeight;
+        int inSampleSize = DEFAULT_SAMPLE_SIZE;
         while (true) {
-            float widthRatio = (mPicW * 8) / (dm.widthPixels * inSampleSize);
-            float heightRatio = (mPicH * 8) / (dm.heightPixels * inSampleSize);
+            float widthRatio = (picW * DEFAULT_SAMPLE_SIZE) / (mActivityWidth * inSampleSize);
+            float heightRatio = (picH * DEFAULT_SAMPLE_SIZE) / (mActivityHeight * inSampleSize);
             if (widthRatio > 1 || heightRatio > 1) {
                 inSampleSize *= 2;
             } else {
                 break;
             }
         }
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
         options.inJustDecodeBounds = false;
         options.inSampleSize = inSampleSize;
-        return BitmapFactory.decodeFile(getIntent().getStringExtra(ARG_INDEX), options);
+        return BitmapFactory.decodeFile(mImageBeen.get(position).getImage_path(), options);
     }
 
 }
