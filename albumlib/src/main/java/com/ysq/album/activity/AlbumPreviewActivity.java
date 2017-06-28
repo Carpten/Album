@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.ysq.album.R;
 import com.ysq.album.bean.ImageBean;
 
@@ -85,26 +84,28 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            final ImageView photoView = new ImageView(AlbumPreviewActivity.this);
-            photoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            final ImageView imageview = new ImageView(AlbumPreviewActivity.this);
+            imageview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            imageview.setScaleType(ImageView.ScaleType.FIT_CENTER);
             String transitionName = container.getContext().getString(R.string.ysq_transition_name, position);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                photoView.setTransitionName(transitionName);
+                imageview.setTransitionName(transitionName);
             }
-            photoView.setTag(position);
-            Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path()).asBitmap().override(mActivityWidth, mActivityHeight)
+            imageview.setTag(position);
+
+            Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path()).asBitmap()
+                    .override(mActivityWidth, mActivityHeight)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            photoView.setImageBitmap(resource);
+                            imageview.setImageBitmap(resource);
                             if (position == mIndex)
-                                setStartPostTransition(photoView);
+                                setStartPostTransition(imageview);
                         }
                     });
 
-            container.addView(photoView);
-            return photoView;
+            container.addView(imageview);
+            return imageview;
         }
 
         @Override

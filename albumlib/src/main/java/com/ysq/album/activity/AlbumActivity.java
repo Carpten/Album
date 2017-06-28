@@ -199,13 +199,15 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         setExitSharedElementCallback(new SharedElementCallback() {
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                AlbumAdapter0.VH viewHolder = (AlbumAdapter0.VH) mRecyclerView.findViewHolderForAdapterPosition(position);
-                if (names != null && sharedElements != null && viewHolder != null) {
+                if (names != null && sharedElements != null) {
                     names.clear();
                     sharedElements.clear();
-                    View view = viewHolder.imageView;
-                    names.add(view.getTransitionName());
-                    sharedElements.put(view.getTransitionName(), view);
+                    AlbumAdapter0.VH viewHolder = (AlbumAdapter0.VH) mRecyclerView.findViewHolderForAdapterPosition(position);
+                    if (viewHolder != null) {
+                        View view = viewHolder.imageView;
+                        names.add(view.getTransitionName());
+                        sharedElements.put(view.getTransitionName(), view);
+                    }
                 }
             }
         });
