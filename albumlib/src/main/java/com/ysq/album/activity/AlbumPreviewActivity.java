@@ -16,10 +16,8 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.ysq.album.R;
+import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.bean.ImageBean;
 
 import java.util.List;
@@ -37,7 +35,7 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
     public static final String ARG_INDEX = "ARG_INDEX";
 
-    private static final int DEFAULT_SAMPLE_SIZE = 2;
+    private static final int DEFAULT_SAMPLE_SIZE = 1;
 
     private List<ImageBean> mImageBeen;
 
@@ -45,7 +43,9 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
     private int mActivityWidth, mActivityHeight;
 
+
     private ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,18 +92,9 @@ public class AlbumPreviewActivity extends AppCompatActivity {
                 imageview.setTransitionName(transitionName);
             }
             imageview.setTag(position);
-
-            Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path()).asBitmap()
-                    .override(mActivityWidth, mActivityHeight)
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            imageview.setImageBitmap(resource);
-                            if (position == mIndex)
-                                setStartPostTransition(imageview);
-                        }
-                    });
-
+            imageview.setImageDrawable(AlbumAdapter0.drawable);
+            if (position == mIndex)
+                setStartPostTransition(imageview);
             container.addView(imageview);
             return imageview;
         }

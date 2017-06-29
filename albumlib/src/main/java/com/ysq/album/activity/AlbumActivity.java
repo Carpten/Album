@@ -103,7 +103,7 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         if (mMode == MODE_PORTRAIT)
             mRecyclerView.setAdapter(new AlbumAdapter(AlbumActivity.this, bucketIndex));
         else
-            mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex));
+            mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex,SPAN_COUNT));
     }
 
 
