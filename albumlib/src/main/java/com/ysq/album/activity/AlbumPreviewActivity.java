@@ -1,24 +1,26 @@
 package com.ysq.album.activity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
+import android.transition.Transition;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.ysq.album.R;
 import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.bean.ImageBean;
+import com.ysq.album.transition.AlbumEnterTransition;
+import com.ysq.album.transition.SimpleTransitionListener;
+import com.ysq.album.view.PreviewViewPager;
 
 import java.util.List;
 import java.util.Map;
@@ -35,40 +37,47 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
     public static final String ARG_INDEX = "ARG_INDEX";
 
-    private static final int DEFAULT_SAMPLE_SIZE = 1;
-
     private List<ImageBean> mImageBeen;
 
     private int mBucketIndex, mIndex;
 
-    private int mActivityWidth, mActivityHeight;
+    private PreviewViewPager mViewPager;
 
-
-    private ViewPager mViewPager;
+    private boolean mIniting = true;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= 21) {
             postponeEnterTransition();
         }
         setContentView(R.layout.ysq_activity_album_preview);
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        mActivityWidth = dm.widthPixels;
-        mActivityHeight = dm.heightPixels;
         mBucketIndex = getIntent().getIntExtra(ARG_BUCKET_INDEX, 0);
         mIndex = getIntent().getIntExtra(ARG_INDEX, 0);
         mImageBeen = AlbumActivity.albumPicker.getBuckets().get(mBucketIndex).getImageBeen();
         setupViewPager();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mImageBeen.get(mIndex).getImage_path(), options);
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setSharedElementEnterTransition(new AlbumEnterTransition(AlbumPreviewActivity.this, options.outWidth, options.outHeight)
+                    .addTarget(getString(R.string.ysq_transition_name, mIndex)).setDuration(getResources().getInteger(R.integer.album_scene_duration_in)).addListener(new SimpleTransitionListener() {
+                        @Override
+                        public void onTransitionEnd(Transition transition) {
+                            mIniting = false;
+                            mViewPager.setScrollEnable(true);
+                        }
+                    }));
+        }
     }
 
 
     private void setupViewPager() {
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager = (PreviewViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setCurrentItem(mIndex);
+        mViewPager.setScrollEnable(false);
     }
 
     private PagerAdapter mPreviewAdapter = new PagerAdapter() {
@@ -84,17 +93,22 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            final ImageView imageview = new ImageView(AlbumPreviewActivity.this);
+            ImageView imageview = new ImageView(AlbumPreviewActivity.this);
             imageview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageview.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            String transitionName = container.getContext().getString(R.string.ysq_transition_name, position);
+            imageview.setTag(R.id.tag_position, position);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                imageview.setTransitionName(transitionName);
+                imageview.setTransitionName(container.getContext().getString(R.string.ysq_transition_name, position));
+                if (position == mIndex && mIniting) {
+                    setStartPostTransition(imageview);
+                }
             }
-            imageview.setTag(position);
-            imageview.setImageDrawable(AlbumAdapter0.drawable);
-            if (position == mIndex)
-                setStartPostTransition(imageview);
+            if (mIniting && position == mIndex) {
+                Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path())
+                        .placeholder(AlbumAdapter0.drawable).dontAnimate().fitCenter().into(imageview);
+            } else
+                Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path())
+                        .fitCenter().into(imageview);
             container.addView(imageview);
             return imageview;
         }
@@ -108,16 +122,42 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
     @Override
     public void finishAfterTransition() {
+        AlbumAdapter0.drawable = null;
         int currentItem = mViewPager.getCurrentItem();
         Intent intent = new Intent();
         intent.putExtra(ARG_INDEX, currentItem);
         setResult(RESULT_OK, intent);
-        View view = mViewPager.findViewWithTag(currentItem);
-        setSharedElementCallback(view);
+        String transitionName = getString(R.string.ysq_transition_name, currentItem);
+        if (Build.VERSION.SDK_INT >= 21) {
+            for (int i = 0; i < mViewPager.getChildCount(); i++) {
+                if (transitionName.equals(mViewPager.getChildAt(i).getTransitionName())) {
+                    setSharedElementCallback(mViewPager.getChildAt(i));
+                    break;
+                }
+            }
+        }
         super.finishAfterTransition();
     }
 
-    @TargetApi(21)
+    @Override
+    public void onBackPressed() {
+        if (!mIniting) {
+            if (mViewPager.isIdle()) {
+                mViewPager.setScrollEnable(false);
+                super.onBackPressed();
+            } else {
+                mViewPager.setNextIdleListener(new PreviewViewPager.NextIdleListener() {
+                    @Override
+                    public void onNextIdle() {
+                        onBackPressed();
+                    }
+                });
+            }
+        }
+    }
+
+
+    @RequiresApi(21)
     private void setSharedElementCallback(final View view) {
         setEnterSharedElementCallback(new SharedElementCallback() {
             @Override
@@ -131,7 +171,7 @@ public class AlbumPreviewActivity extends AppCompatActivity {
     }
 
 
-    @TargetApi(21)
+    @RequiresApi(21)
     private void setStartPostTransition(final View view) {
         view.getViewTreeObserver().addOnPreDrawListener(
                 new ViewTreeObserver.OnPreDrawListener() {
@@ -143,28 +183,4 @@ public class AlbumPreviewActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-    private Bitmap getThumbnailPic(int position) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mImageBeen.get(position).getImage_path(), options);
-        int picW = options.outWidth;
-        int picH = options.outHeight;
-        int inSampleSize = DEFAULT_SAMPLE_SIZE;
-        while (true) {
-            float widthRatio = (picW * DEFAULT_SAMPLE_SIZE) / (mActivityWidth * inSampleSize);
-            float heightRatio = (picH * DEFAULT_SAMPLE_SIZE) / (mActivityHeight * inSampleSize);
-            if (widthRatio > 1 || heightRatio > 1) {
-                inSampleSize *= 2;
-            } else {
-                break;
-            }
-        }
-        options.inJustDecodeBounds = false;
-        options.inSampleSize = inSampleSize;
-        return BitmapFactory.decodeFile(mImageBeen.get(position).getImage_path(), options);
-    }
-
 }

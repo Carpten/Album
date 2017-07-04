@@ -17,6 +17,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +63,8 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
 
     private MaterialDialog mBucketDialog;
 
+    private long mThrottleTimeMillis, mLastTimeMills;
+
     private int mMode;
 
 
@@ -70,6 +73,7 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album);
         mMode = getIntent().getIntExtra(ARG_MODE, MODE_SELECT);
+        mThrottleTimeMillis = getResources().getInteger(R.integer.album_scene_duration_in);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
@@ -103,7 +107,7 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         if (mMode == MODE_PORTRAIT)
             mRecyclerView.setAdapter(new AlbumAdapter(AlbumActivity.this, bucketIndex));
         else
-            mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex,SPAN_COUNT));
+            mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex, SPAN_COUNT));
     }
 
 
@@ -226,11 +230,22 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            onBackPressed();
+            if (System.currentTimeMillis() - mLastTimeMills >= mThrottleTimeMillis)
+                onBackPressed();
             return true;
         } else if (i == R.id.action_done) {
             return true;
         } else
             return super.onOptionsItemSelected(item);
+    }
+
+
+    public boolean isThrottle() {
+        if (System.currentTimeMillis() - mLastTimeMills >= mThrottleTimeMillis) {
+            mLastTimeMills = System.currentTimeMillis();
+            return false;
+        } else {
+            return true;
+        }
     }
 }

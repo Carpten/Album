@@ -64,7 +64,7 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
         if (options.outWidth >= options.outHeight) {
             picW = mImageLesserLength * options.outWidth / options.outHeight;
             picH = mImageLesserLength;
-        }else{
+        } else {
             picW = mImageLesserLength;
             picH = mImageLesserLength * options.outHeight / options.outWidth;
         }
@@ -81,14 +81,16 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        drawable = ((ImageView) v).getDrawable();
-        Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
-        intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
-        intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
-        String tag = (String) v.getTag(R.id.tag_transition_name);
-        mAlbumActivity.setExitSharedElementCallback((SharedElementCallback) null);
-        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mAlbumActivity, v, tag);
-        mAlbumActivity.startActivity(intent, activityOptions.toBundle());
+        if (!mAlbumActivity.isThrottle()) {
+            drawable = ((ImageView) v).getDrawable();
+            Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
+            intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
+            intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
+            String tag = (String) v.getTag(R.id.tag_transition_name);
+            mAlbumActivity.setExitSharedElementCallback((SharedElementCallback) null);
+            ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mAlbumActivity, v, tag);
+            mAlbumActivity.startActivity(intent, activityOptions.toBundle());
+        }
     }
 
     @Override
