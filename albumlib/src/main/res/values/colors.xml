@@ -4,9 +4,6 @@
     <color name="colorPrimaryDark">#009688</color>
     <color name="colorAccent">#ffab40</color>
 
-    <color name="ysq_checkbox_mask0">#1E000000</color>
-    <color name="ysq_checkbox_mask1">#80000000</color>
-
     <color name="ysq_preview_dark">#FF3E3E3E</color>
 
 

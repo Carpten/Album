@@ -9,9 +9,11 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -55,7 +57,7 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mImageBeen.get(position).getImage_path(), options);
@@ -77,6 +79,12 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
             ((VH) holder).imageView.setTransitionName(transitionName);
             ((VH) holder).imageView.setTag(R.id.tag_transition_name, transitionName);
         }
+        ((VH) holder).checkBox.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("test", "w:" + ((VH) holder).checkBox.getWidth() + ",h:" + ((VH) holder).checkBox.getHeight());
+            }
+        });
     }
 
     @Override
@@ -101,11 +109,14 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
 
     public class VH extends RecyclerView.ViewHolder {
         public ImageView imageView;
+        public CheckBox checkBox;
 
         VH(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imageview);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
             imageView.setDrawingCacheEnabled(true);
+
         }
     }
 }
