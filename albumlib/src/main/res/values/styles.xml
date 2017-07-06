@@ -11,7 +11,6 @@
 
     </style>
 
-
     <style name="AlbumPreviewTheme" parent="AlbumTheme">
         <item name="android:windowFullscreen">true</item>
         <item name="windowActionBar">false</item>

@@ -1,10 +1,8 @@
 package com.ysq.album.adapter;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +30,10 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
 
     private int mBucketIndex;
 
-    public static Drawable drawable;
-
     public AlbumAdapter0(AlbumActivity albumActivity, int bucketIndex) {
         mAlbumActivity = albumActivity;
         mBucketIndex = bucketIndex;
         mImageBeen = AlbumActivity.albumPicker.getBuckets().get(bucketIndex).getImageBeen();
-
     }
 
 
@@ -62,7 +57,7 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
         intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
         intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
         mAlbumActivity.startActivity(intent);
-
+        mAlbumActivity.overridePendingTransition(R.anim.activity_fade_in, 0);
     }
 
     @Override

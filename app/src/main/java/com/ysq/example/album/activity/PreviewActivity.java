@@ -66,7 +66,8 @@ public class PreviewActivity extends AppCompatActivity {
     private void setupViewPager() {
         mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setCurrentItem(mIndex);
-        mViewPager.setScrollEnable(false);
+        if (Build.VERSION.SDK_INT >= 21)
+            mViewPager.setScrollEnable(false);
     }
 
     private PagerAdapter mPreviewAdapter = new PagerAdapter() {
@@ -130,7 +131,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!mIniting) {
+        if (Build.VERSION.SDK_INT >= 21 && !mIniting) {
             if (mViewPager.isIdle()) {
                 mViewPager.setScrollEnable(false);
                 super.onBackPressed();
@@ -142,6 +143,8 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                 });
             }
+        } else if (Build.VERSION.SDK_INT <= 21) {
+            super.onBackPressed();
         }
     }
 

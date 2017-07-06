@@ -41,7 +41,6 @@ public class BrowseActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mThrottleTimeMillis = getResources().getInteger(R.integer.scene_duration_in);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         mRecyclerView.addItemDecoration(new BrowseDecoration(this));
         mRecyclerView.setAdapter(new BrowseAdapter(this));
