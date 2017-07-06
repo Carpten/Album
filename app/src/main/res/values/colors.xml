@@ -7,4 +7,13 @@
     <color name="buttonNormal">#D6D6D6</color>
     <color name="buttonPressed">#B6B6B6</color>
     <color name="colorPlaceholder">#E2E2E2</color>
+
+    <color name="preview_dark">#FF3E3E3E</color>
+
+    <color name="textWhite">#FFFFFFFF</color>
+    <color name="secondaryTextWhite">#B3FFFFFF</color>
+    <color name="thirdTextWhite">#4CFFFFFF</color>
+    <color name="textBlack">#DF000000</color>
+    <color name="secondaryTextBlack">#8A000000</color>
+    <color name="thirdTextBlack">#42000000</color>
 </resources>

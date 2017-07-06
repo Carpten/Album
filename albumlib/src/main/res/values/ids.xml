@@ -2,4 +2,5 @@
 <resources>
     <item name="tag_position" type="id" />
     <item name="tag_transition_name" type="id" />
+    <item name="tag_viewholder" type="id" />
 </resources>

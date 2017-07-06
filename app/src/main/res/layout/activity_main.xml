@@ -48,6 +48,17 @@
             android:background="@drawable/sl_button"
             android:onClick="portraitUpload"
             android:text="@string/portrait_upload" />
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/sl_button"
+            android:onClick="picBrowse"
+            android:text="@string/picture_browse" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

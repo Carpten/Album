@@ -9,7 +9,6 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,16 +78,10 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
             ((VH) holder).imageView.setTransitionName(transitionName);
             ((VH) holder).imageView.setTag(R.id.tag_transition_name, transitionName);
         }
-        ((VH) holder).checkBox.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.i("test", "w:" + ((VH) holder).checkBox.getWidth() + ",h:" + ((VH) holder).checkBox.getHeight());
-            }
-        });
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         if (!mAlbumActivity.isThrottle()) {
             drawable = ((ImageView) v).getDrawable();
             Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
@@ -116,7 +109,6 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
             imageView = (ImageView) itemView.findViewById(R.id.imageview);
             checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
             imageView.setDrawingCacheEnabled(true);
-
         }
     }
 }

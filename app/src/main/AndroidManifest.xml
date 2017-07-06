@@ -19,11 +19,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.PersonalActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.PersonalActivity" />
+        <activity
+            android:name=".activity.BrowseActivity"
+            android:label="@string/picture_browse"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.PersonalActivity" />
+        <activity
+            android:name=".activity.PreviewActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.PreviewTheme" />
     </application>
 
 </manifest>
