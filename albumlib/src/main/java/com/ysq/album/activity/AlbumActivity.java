@@ -63,8 +63,6 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
 
     private MaterialDialog mBucketDialog;
 
-    private long mThrottleTimeMillis, mLastTimeMills;
-
     private int mMode;
 
 
@@ -73,7 +71,6 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album);
         mMode = getIntent().getIntExtra(ARG_MODE, MODE_SELECT);
-        mThrottleTimeMillis = getResources().getInteger(R.integer.album_scene_duration_in);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
@@ -107,7 +104,7 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         if (mMode == MODE_PORTRAIT)
             mRecyclerView.setAdapter(new AlbumAdapter(AlbumActivity.this, bucketIndex));
         else
-            mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex, SPAN_COUNT));
+            mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex));
     }
 
 
@@ -190,35 +187,6 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        super.onActivityReenter(resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
-            int position = data.getIntExtra(AlbumPreviewActivity.ARG_INDEX, 0);
-            setCallback(position);
-        }
-    }
-
-    @TargetApi(21)
-    private void setCallback(final int position) {
-        setExitSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                if (names != null && sharedElements != null) {
-                    names.clear();
-                    sharedElements.clear();
-                    AlbumAdapter0.VH viewHolder = (AlbumAdapter0.VH) mRecyclerView.findViewHolderForAdapterPosition(position);
-                    if (viewHolder != null) {
-                        View view = viewHolder.imageView;
-                        names.add(view.getTransitionName());
-                        sharedElements.put(view.getTransitionName(), view);
-                    }
-                }
-            }
-        });
-    }
-
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.ysq_menu_done, menu);
@@ -230,22 +198,11 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (System.currentTimeMillis() - mLastTimeMills >= mThrottleTimeMillis)
-                onBackPressed();
+            onBackPressed();
             return true;
         } else if (i == R.id.action_done) {
             return true;
         } else
             return super.onOptionsItemSelected(item);
-    }
-
-
-    public boolean isThrottle() {
-        if (System.currentTimeMillis() - mLastTimeMills >= mThrottleTimeMillis) {
-            mLastTimeMills = System.currentTimeMillis();
-            return false;
-        } else {
-            return true;
-        }
     }
 }

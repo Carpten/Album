@@ -1,8 +1,0 @@
-<resources>
-
-    <style name="AlbumPreviewTheme" parent="AlbumTheme">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSharedElementReturnTransition">@transition/album_preview_transition</item>
-    </style>
-
-</resources>
