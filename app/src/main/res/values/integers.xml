@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="scene_duration_in">250</integer>
+    <integer name="scene_duration_out">180</integer>
+</resources>
