@@ -30,7 +30,6 @@ import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.adapter.AlbumBucketAdapter;
 import com.ysq.album.bean.BucketBean;
 import com.ysq.album.divider.AlbumDecoration;
-import com.ysq.album.itf.IAlbum;
 import com.ysq.album.other.AlbumPicker;
 
 import java.io.File;
@@ -41,7 +40,7 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class AlbumActivity extends AppCompatActivity implements View.OnClickListener, IAlbum {
+public class AlbumActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String ARG_PATH = "ARG_INDEX";
 
@@ -130,7 +129,6 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    @Override
     public void takePhoto() {
         AlbumActivityPermissionsDispatcher.startPhotoWithCheck(this);
     }
@@ -152,7 +150,6 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 裁剪图片方法实现
      */
-    @Override
     public void startZoom(Uri uri) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent("com.android.camera.action.CROP");
