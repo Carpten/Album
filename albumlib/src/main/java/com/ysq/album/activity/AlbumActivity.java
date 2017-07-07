@@ -2,7 +2,6 @@ package com.ysq.album.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -11,13 +10,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,18 +26,19 @@ import com.ysq.album.adapter.AlbumAdapter;
 import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.adapter.AlbumBucketAdapter;
 import com.ysq.album.bean.BucketBean;
+import com.ysq.album.bean.ImageBean;
 import com.ysq.album.divider.AlbumDecoration;
 import com.ysq.album.other.AlbumPicker;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class AlbumActivity extends AppCompatActivity implements View.OnClickListener {
+public class AlbumActivity extends AppCompatActivity {
 
     public static final String ARG_PATH = "ARG_INDEX";
 
@@ -60,12 +58,10 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
 
     private RecyclerView mRecyclerView;
 
-    private MaterialDialog mBucketDialog;
-
     private int mMode;
 
-
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album);
@@ -94,6 +90,34 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        AlbumActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+
+    private void initSwitchIcon() {
+        if (albumPicker.getBuckets().get(0).getImageBeen().size() == 0) {
+            findViewById(R.id.iv_switch_bucket).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.switch_bucket).setOnClickListener(mSwitchIconClickListener);
+        }
+    }
+
+    private MaterialDialog mBucketDialog;
+
+    private View.OnClickListener mSwitchIconClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mBucketDialog = new MaterialDialog.Builder(AlbumActivity.this)
+                    .adapter(new AlbumBucketAdapter(AlbumActivity.this, albumPicker.getBuckets()), new LinearLayoutManager(AlbumActivity.this))
+                    .autoDismiss(true)
+                    .title(getString(R.string.ysq_switch_bucket_title))
+                    .negativeText(getString(R.string.ysq_cancel))
+                    .show();
+        }
+    };
+
     public void setBucket(int bucketIndex) {
         if (mBucketDialog != null && mBucketDialog.isShowing()) {
             mBucketDialog.dismiss();
@@ -104,29 +128,6 @@ public class AlbumActivity extends AppCompatActivity implements View.OnClickList
             mRecyclerView.setAdapter(new AlbumAdapter(AlbumActivity.this, bucketIndex));
         else
             mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex));
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        AlbumActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @Override
-    public void onClick(View v) {
-        mBucketDialog = new MaterialDialog.Builder(AlbumActivity.this)
-                .adapter(new AlbumBucketAdapter(AlbumActivity.this, albumPicker.getBuckets()), new LinearLayoutManager(AlbumActivity.this))
-                .title(getString(R.string.ysq_switch_bucket_title))
-                .negativeText(getString(R.string.ysq_cancel))
-                .show();
-    }
-
-    private void initSwitchIcon() {
-        if (albumPicker.getBuckets().get(0).getImageBeen().size() == 0) {
-            findViewById(R.id.iv_switch_bucket).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.switch_bucket).setOnClickListener(this);
-        }
     }
 
     public void takePhoto() {

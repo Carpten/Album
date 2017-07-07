@@ -27,9 +27,11 @@ public class AlbumPicker {
             MediaStore.Images.Media.DATA
     };
 
+    private static final int DEFAULT_MAX_COUNT = 9;
+
     private List<BucketBean> mBuckets = new ArrayList<>();
 
-    private List<ImageBean> mSelectBeen = new ArrayList<>();
+    private List<ImageBean> mSelectedImageBeen = new ArrayList<>();
 
     public AlbumPicker(Context context) {
         Cursor cursor = context.getContentResolver().query(
@@ -76,17 +78,26 @@ public class AlbumPicker {
         return mBuckets;
     }
 
-    public boolean addImage(ImageBean imageBean) {
-        if (mSelectBeen.contains(imageBean))
-            return false;
-        else {
-            mSelectBeen.add(imageBean);
-            return true;
-        }
+
+    public int getMaxCount() {
+        return DEFAULT_MAX_COUNT;
     }
 
-    public boolean removeImage(ImageBean imageBean) {
-        return mSelectBeen.remove(imageBean);
+    public int getCurrentCount() {
+        return mSelectedImageBeen.size();
     }
 
+    public void add(ImageBean imageBean) {
+        if (getCurrentCount() < getMaxCount())
+            mSelectedImageBeen.add(imageBean);
+
+    }
+
+    public void remove(ImageBean imageBean) {
+        mSelectedImageBeen.remove(imageBean);
+    }
+
+    public List<ImageBean> getSelectImages() {
+        return mSelectedImageBeen;
+    }
 }

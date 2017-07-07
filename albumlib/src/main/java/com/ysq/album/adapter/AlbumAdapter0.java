@@ -1,12 +1,13 @@
 package com.ysq.album.adapter;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -14,6 +15,7 @@ import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.activity.AlbumPreviewActivity;
 import com.ysq.album.bean.ImageBean;
+import com.ysq.album.view.AlbumCheckBox;
 
 import java.util.List;
 
@@ -22,7 +24,8 @@ import java.util.List;
  * Date:2017/4/14.
  */
 
-public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
+public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implements View.OnClickListener
+        , CompoundButton.OnCheckedChangeListener, AlbumCheckBox.OnCannotCheckMoreListener {
 
     private AlbumActivity mAlbumActivity;
 
@@ -38,17 +41,21 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
 
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AlbumAdapter0.VH onCreateViewHolder(ViewGroup parent, int viewType) {
         return new VH(LayoutInflater.from(mAlbumActivity).inflate(R.layout.ysq_recyclerview_album2, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        Glide.clear(((VH) holder).imageView);
+    public void onBindViewHolder(final AlbumAdapter0.VH holder, int position) {
+        Glide.clear(holder.imageView);
         Glide.with(mAlbumActivity).load(mImageBeen.get(position).getImage_path())
-                .placeholder(R.drawable.ic_album_default).centerCrop().into(((VH) holder).imageView);
-        ((VH) holder).imageView.setTag(R.id.tag_position, position);
-        ((VH) holder).imageView.setOnClickListener(this);
+                .placeholder(R.drawable.ic_album_default).centerCrop().into(holder.imageView);
+        holder.imageView.setTag(R.id.tag_position, position);
+        holder.imageView.setOnClickListener(this);
+        holder.checkBox.setTag(R.id.tag_viewholder, holder);
+        holder.checkBox.setOnCheckedChangeListener(this);
+        holder.checkBox.setOnCannotCheckMoreListener(this);
+        holder.checkBox.setChecked(mImageBeen.get(position).isSelected());
     }
 
     @Override
@@ -57,7 +64,6 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
         intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
         intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
         mAlbumActivity.startActivity(intent);
-        mAlbumActivity.overridePendingTransition(R.anim.activity_fade_in, 0);
     }
 
     @Override
@@ -65,15 +71,39 @@ public class AlbumAdapter0 extends Adapter implements View.OnClickListener {
         return mImageBeen.size();
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        AlbumAdapter0.VH holder = (VH) buttonView.getTag(R.id.tag_viewholder);
+        if (isChecked) {
+            holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, R.color.ysq_mask1));
+            mImageBeen.get(holder.getAdapterPosition()).setSelected(true);
+            AlbumActivity.albumPicker.add(mImageBeen.get(holder.getAdapterPosition()));
+        } else {
+            holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, R.color.ysq_mask0));
+            mImageBeen.get(holder.getAdapterPosition()).setSelected(false);
+            AlbumActivity.albumPicker.remove(mImageBeen.get(holder.getAdapterPosition()));
+        }
+    }
 
+    @Override
+    public void OnCannotCheckMore() {
+        Snackbar.make(mAlbumActivity.getWindow().getDecorView()
+                , mAlbumActivity.getString(R.string.ysq_cannot_select_more, AlbumActivity.albumPicker.getMaxCount())
+                , Snackbar.LENGTH_SHORT).show();
+    }
+
+
+    @SuppressWarnings("WeakerAccess")
     public class VH extends RecyclerView.ViewHolder {
-        public ImageView imageView;
-        public CheckBox checkBox;
+        ImageView imageView;
+        AlbumCheckBox checkBox;
+        View mask;
 
-        VH(View itemView) {
+        private VH(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imageview);
-            checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+            checkBox = (AlbumCheckBox) itemView.findViewById(R.id.checkbox);
+            mask = itemView.findViewById(R.id.mask);
             imageView.setDrawingCacheEnabled(true);
         }
     }

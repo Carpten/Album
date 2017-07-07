@@ -13,6 +13,12 @@
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
 
+    <View
+        android:id="@+id/mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ysq_mask0" />
+
 
     <com.ysq.album.view.AlbumCheckBox
         android:id="@+id/checkbox"

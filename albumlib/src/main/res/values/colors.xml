@@ -5,7 +5,8 @@
     <color name="colorAccent">#ffab40</color>
 
     <color name="ysq_preview_dark">#FF3E3E3E</color>
-
+    <color name="ysq_mask0">#10000000</color>
+    <color name="ysq_mask1">#80000000</color>
 
     <color name="textWhite">#FFFFFFFF</color>
     <color name="secondaryTextWhite">#B3FFFFFF</color>
@@ -14,5 +15,4 @@
     <color name="secondaryTextBlack">#8A000000</color>
     <color name="thirdTextBlack">#42000000</color>
 
-    <color name="divideBlack">#48000000</color>
 </resources>

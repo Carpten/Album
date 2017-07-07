@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.ysq.album.activity.AlbumActivity;
+
 /**
  * Author: yangshuiqiang
  * Date:2017/7/4.
@@ -11,7 +13,8 @@ import android.view.MotionEvent;
 
 public class AlbumCheckBox extends android.support.v7.widget.AppCompatCheckBox {
 
-    private boolean mCheckEnable = true;
+
+    private OnCannotCheckMoreListener mOnCannotCheckMoreListener;
 
     public AlbumCheckBox(Context context) {
         super(context);
@@ -27,12 +30,19 @@ public class AlbumCheckBox extends android.support.v7.widget.AppCompatCheckBox {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return !mCheckEnable || super.onTouchEvent(event);
+        if (AlbumActivity.albumPicker.getCurrentCount() >= AlbumActivity.albumPicker.getMaxCount() && !isChecked()) {
+            if (event.getAction() == MotionEvent.ACTION_UP && mOnCannotCheckMoreListener != null)
+                mOnCannotCheckMoreListener.OnCannotCheckMore();
+            return true;
+        } else
+            return super.onTouchEvent(event);
     }
 
-    public void setCheckEnable(boolean checkEnable) {
-        mCheckEnable = checkEnable;
+    public void setOnCannotCheckMoreListener(OnCannotCheckMoreListener onCannotCheckMoreListener) {
+        mOnCannotCheckMoreListener = onCannotCheckMoreListener;
     }
 
-
+    public interface OnCannotCheckMoreListener {
+        void OnCannotCheckMore();
+    }
 }

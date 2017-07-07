@@ -9,7 +9,12 @@
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ysq_preview_dark"
         android:fitsSystemWindows="true" />
+
+    <com.ysq.album.view.AlbumCheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="选择" />
 
 </android.support.design.widget.CoordinatorLayout>

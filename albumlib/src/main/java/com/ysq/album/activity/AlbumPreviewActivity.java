@@ -6,9 +6,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.ysq.album.R;
 import com.ysq.album.bean.ImageBean;
 
@@ -32,7 +32,8 @@ public class AlbumPreviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album_preview);
-        mImageBeen = AlbumActivity.albumPicker.getBuckets().get(getIntent().getIntExtra(ARG_BUCKET_INDEX, 0)).getImageBeen();
+        mImageBeen = AlbumActivity.albumPicker.getBuckets().get(getIntent().getIntExtra(ARG_BUCKET_INDEX, 0))
+                .getImageBeen();
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(mPreviewAdapter);
         viewPager.setCurrentItem(getIntent().getIntExtra(ARG_INDEX, 0));
@@ -51,9 +52,8 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            ImageView imageview = new ImageView(AlbumPreviewActivity.this);
+            PhotoView imageview = new PhotoView(AlbumPreviewActivity.this);
             imageview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            imageview.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageview.setTag(R.id.tag_position, position);
             Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path()).fitCenter().into(imageview);
             container.addView(imageview);
@@ -65,10 +65,4 @@ public class AlbumPreviewActivity extends AppCompatActivity {
             container.removeView((View) object);
         }
     };
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0, R.anim.activity_fade_out);
-    }
 }

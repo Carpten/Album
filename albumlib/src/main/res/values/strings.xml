@@ -2,7 +2,7 @@
     <string name="ysq_all_images">所有图片</string>
     <string name="ysq_switch_bucket_item" formatted="false">%s（共%d张）</string>
     <string name="ysq_switch_bucket_title">请选择一个相册</string>
-    <string name="ysq_cannot_select_more" formatted="false">最多选择%d张图片</string>
+    <string name="ysq_cannot_select_more" formatted="false">你最多只能选择%d张图片</string>
     <string name="ysq_cancel">取消</string>
     <string name="ysq_done">确定</string>
     <string name="ysq_preview">预览</string>
