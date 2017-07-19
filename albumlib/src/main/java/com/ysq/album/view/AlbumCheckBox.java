@@ -42,6 +42,10 @@ public class AlbumCheckBox extends android.support.v7.widget.AppCompatCheckBox {
         mOnCannotCheckMoreListener = onCannotCheckMoreListener;
     }
 
+    public OnCannotCheckMoreListener getOnCannotCheckMoreListener() {
+        return mOnCannotCheckMoreListener;
+    }
+
     public interface OnCannotCheckMoreListener {
         void OnCannotCheckMore();
     }

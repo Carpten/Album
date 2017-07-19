@@ -7,6 +7,7 @@
     <color name="ysq_preview_dark">#FF3E3E3E</color>
     <color name="ysq_mask0">#10000000</color>
     <color name="ysq_mask1">#80000000</color>
+    <color name="ysq_album_bottom">#e8e8e8</color>
 
     <color name="textWhite">#FFFFFFFF</color>
     <color name="secondaryTextWhite">#B3FFFFFF</color>

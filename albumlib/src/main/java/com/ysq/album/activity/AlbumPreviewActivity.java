@@ -1,16 +1,19 @@
 package com.ysq.album.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.ysq.album.R;
-import com.ysq.album.bean.ImageBean;
+import com.ysq.album.bean.ImageBean0;
+import com.ysq.album.view.AlbumCheckBox;
 
 import java.util.List;
 
@@ -26,17 +29,36 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
     public static final String ARG_INDEX = "ARG_INDEX";
 
-    private List<ImageBean> mImageBeen;
+    public static final String ARG_MODE = "ARG_MODE";
+
+    public static final int MODE_SINGLE = 0;
+
+    public static final int MODE_ALL = 1;
+
+    private List<ImageBean0> mImageBeen;
+
+    private AlbumCheckBox mCheckBox;
+
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album_preview);
-        mImageBeen = AlbumActivity.albumPicker.getBuckets().get(getIntent().getIntExtra(ARG_BUCKET_INDEX, 0))
-                .getImageBeen();
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(mPreviewAdapter);
-        viewPager.setCurrentItem(getIntent().getIntExtra(ARG_INDEX, 0));
+        int mode = getIntent().getIntExtra(ARG_MODE, MODE_SINGLE);
+        int currentPosition = getIntent().getIntExtra(ARG_INDEX, 0);
+        if (mode == MODE_SINGLE)
+            mImageBeen = AlbumActivity.albumPicker.getBuckets().get(getIntent().getIntExtra(ARG_BUCKET_INDEX, 0)).getImageBeen();
+        else
+            mImageBeen = AlbumActivity.albumPicker.getSelectImages();
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager.setAdapter(mPreviewAdapter);
+        mViewPager.setCurrentItem(currentPosition);
+        mViewPager.addOnPageChangeListener(mOnPageChangeListener);
+        mCheckBox = (AlbumCheckBox) findViewById(R.id.checkbox);
+        mCheckBox.setChecked(mImageBeen.get(currentPosition).isSelected());
+        mCheckBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
+        mCheckBox.setOnCannotCheckMoreListener(mOnCannotCheckMoreListener);
     }
 
     private PagerAdapter mPreviewAdapter = new PagerAdapter() {
@@ -65,4 +87,50 @@ public class AlbumPreviewActivity extends AppCompatActivity {
             container.removeView((View) object);
         }
     };
+
+
+    private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            mCheckBox.setOnCheckedChangeListener(null);
+            mCheckBox.setChecked(mImageBeen.get(position).isSelected());
+            mCheckBox.setOnCheckedChangeListener(mOnCheckedChangeListener);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    private CompoundButton.OnCheckedChangeListener mOnCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            mImageBeen.get(mViewPager.getCurrentItem()).setSelected(isChecked);
+            if (isChecked)
+                AlbumActivity.albumPicker.add(mImageBeen.get(mViewPager.getCurrentItem()));
+            else
+                AlbumActivity.albumPicker.remove(mImageBeen.get(mViewPager.getCurrentItem()));
+        }
+    };
+
+    private AlbumCheckBox.OnCannotCheckMoreListener mOnCannotCheckMoreListener = new AlbumCheckBox.OnCannotCheckMoreListener() {
+        @Override
+        public void OnCannotCheckMore() {
+            Snackbar.make(getWindow().getDecorView()
+                    , getString(R.string.ysq_cannot_select_more, AlbumActivity.albumPicker.getMaxCount())
+                    , Snackbar.LENGTH_SHORT).show();
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
+    }
 }

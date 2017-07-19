@@ -1,7 +1,6 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
-    <dimen name="toolbar_padding_top">0dp</dimen>
     <dimen name="personal_head_height">215dp</dimen>
     <dimen name="personal_toolbar_expand_distance">159dp</dimen>
     <dimen name="recycler_divide">1dp</dimen>

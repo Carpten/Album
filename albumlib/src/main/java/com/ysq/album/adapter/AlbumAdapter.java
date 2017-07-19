@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
-import com.ysq.album.bean.ImageBean;
+import com.ysq.album.bean.ImageBean0;
 
 import java.io.File;
 import java.util.List;
@@ -25,7 +25,7 @@ public class AlbumAdapter extends Adapter implements View.OnClickListener {
 
     private AlbumActivity mAlbumActivity;
 
-    private List<ImageBean> mImageBeen;
+    private List<ImageBean0> mImageBeen;
 
     private int mBucketIndex;
 

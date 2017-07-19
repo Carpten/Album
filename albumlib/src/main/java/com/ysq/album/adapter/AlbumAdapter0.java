@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.activity.AlbumPreviewActivity;
-import com.ysq.album.bean.ImageBean;
+import com.ysq.album.bean.ImageBean0;
 import com.ysq.album.view.AlbumCheckBox;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     private AlbumActivity mAlbumActivity;
 
-    private List<ImageBean> mImageBeen;
+    private List<ImageBean0> mImageBeen;
 
     private int mBucketIndex;
 
@@ -52,10 +52,22 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
                 .placeholder(R.drawable.ic_album_default).centerCrop().into(holder.imageView);
         holder.imageView.setTag(R.id.tag_position, position);
         holder.imageView.setOnClickListener(this);
+        setCheckBox(holder);
+    }
+
+    public void setCheckBox(VH holder) {
         holder.checkBox.setTag(R.id.tag_viewholder, holder);
-        holder.checkBox.setOnCheckedChangeListener(this);
-        holder.checkBox.setOnCannotCheckMoreListener(this);
-        holder.checkBox.setChecked(mImageBeen.get(position).isSelected());
+        if (holder.checkBox.isChecked() != mImageBeen.get(holder.getAdapterPosition()).isSelected()) {
+            holder.checkBox.setOnCheckedChangeListener(null);
+            holder.checkBox.setChecked(mImageBeen.get(holder.getAdapterPosition()).isSelected());
+            holder.checkBox.setOnCheckedChangeListener(this);
+            holder.checkBox.setOnCannotCheckMoreListener(this);
+            holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, mImageBeen
+                    .get(holder.getAdapterPosition()).isSelected() ? R.color.ysq_mask1 : R.color.ysq_mask0));
+        } else if (holder.checkBox.getOnCannotCheckMoreListener() == null) {
+            holder.checkBox.setOnCheckedChangeListener(this);
+            holder.checkBox.setOnCannotCheckMoreListener(this);
+        }
     }
 
     @Override
@@ -63,7 +75,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
         Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
         intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
         intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
-        mAlbumActivity.startActivity(intent);
+        mAlbumActivity.startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
     }
 
     @Override
@@ -83,6 +95,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
             mImageBeen.get(holder.getAdapterPosition()).setSelected(false);
             AlbumActivity.albumPicker.remove(mImageBeen.get(holder.getAdapterPosition()));
         }
+        mAlbumActivity.refreshSelectNum();
     }
 
     @Override
@@ -96,7 +109,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
     @SuppressWarnings("WeakerAccess")
     public class VH extends RecyclerView.ViewHolder {
         ImageView imageView;
-        AlbumCheckBox checkBox;
+        public AlbumCheckBox checkBox;
         View mask;
 
         private VH(View itemView) {

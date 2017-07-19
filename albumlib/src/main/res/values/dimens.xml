@@ -1,4 +1,7 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="album_divide">1dp</dimen>
+    <dimen name="album_bottom_margin">2dp</dimen>
+    <dimen name="album_bottom_padding_horizonal">14dp</dimen>
+    <dimen name="album_bottom_padding_vetical">8dp</dimen>
 </resources>

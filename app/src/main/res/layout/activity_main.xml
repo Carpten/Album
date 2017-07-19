@@ -34,7 +34,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="16dp"
-            android:background="@drawable/sl_button"
+            android:background="@drawable/btn_selector"
             android:onClick="picSelect"
             android:text="@string/picture_select" />
 
@@ -45,7 +45,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="8dp"
-            android:background="@drawable/sl_button"
+            android:background="@drawable/btn_selector"
             android:onClick="portraitUpload"
             android:text="@string/portrait_upload" />
 
@@ -56,7 +56,7 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="8dp"
-            android:background="@drawable/sl_button"
+            android:background="@drawable/btn_selector"
             android:onClick="picBrowse"
             android:text="@string/picture_browse" />
     </LinearLayout>

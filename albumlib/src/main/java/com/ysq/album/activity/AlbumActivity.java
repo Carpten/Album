@@ -27,6 +27,7 @@ import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.adapter.AlbumBucketAdapter;
 import com.ysq.album.bean.BucketBean;
 import com.ysq.album.bean.ImageBean;
+import com.ysq.album.bean.ImageBean0;
 import com.ysq.album.divider.AlbumDecoration;
 import com.ysq.album.other.AlbumPicker;
 
@@ -44,9 +45,13 @@ public class AlbumActivity extends AppCompatActivity {
 
     public static final String ARG_MODE = "ARG_MODE";
 
+    public static final String ARG_DATA = "ARG_DATA";
+
     private static final int INTENT_CAMERA = 100;
 
     private static final int INTENT_ZOOM = 101;
+
+    public static final int INTENT_PREVIEW = 102;
 
     public static final int MODE_SELECT = 0;
 
@@ -85,6 +90,7 @@ public class AlbumActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
         mRecyclerView.addItemDecoration(new AlbumDecoration(this));
+        refreshSelectNum();
         setBucket(0);
         initSwitchIcon();
     }
@@ -168,6 +174,19 @@ public class AlbumActivity extends AppCompatActivity {
         }
     }
 
+    public void startPreview(View view) {
+        if (albumPicker.getSelectImages().size() > 0) {
+            Intent intent = new Intent(AlbumActivity.this, AlbumPreviewActivity.class);
+            intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumPreviewActivity.MODE_ALL);
+            startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
+        }
+    }
+
+    public void refreshSelectNum() {
+        TextView tvChooseNum = (TextView) findViewById(R.id.tv_choose_num);
+        tvChooseNum.setText(getString(R.string.ysq_choose_num, albumPicker.getCurrentCount(), albumPicker.getMaxCount()));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
@@ -180,6 +199,17 @@ public class AlbumActivity extends AppCompatActivity {
                 intent.putExtra(ARG_PATH, new File(getExternalCacheDir(), getString(R.string.ysq_album_zoom)).getPath());
                 setResult(RESULT_OK, intent);
                 finish();
+                break;
+            case INTENT_PREVIEW:
+                int childCount = mRecyclerView.getChildCount();
+                for (int i = 0; i < childCount; i++) {
+                    View childView = mRecyclerView.getChildAt(i);
+                    AlbumAdapter0.VH childViewHolder = (AlbumAdapter0.VH) mRecyclerView.getChildViewHolder(childView);
+                    AlbumAdapter0 adapter = (AlbumAdapter0) mRecyclerView.getAdapter();
+                    adapter.setCheckBox(childViewHolder);
+                }
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                refreshSelectNum();
                 break;
         }
     }
@@ -197,8 +227,25 @@ public class AlbumActivity extends AppCompatActivity {
         int i = item.getItemId();
         if (i == android.R.id.home) {
             onBackPressed();
+            albumPicker = null;
             return true;
         } else if (i == R.id.action_done) {
+            if (albumPicker.getCurrentCount() > 0) {
+                ArrayList<ImageBean> imageBeen = new ArrayList<>();
+                for (ImageBean0 imageBean0 : albumPicker.getSelectImages()) {
+                    ImageBean imageBean = new ImageBean();
+                    imageBean.setImage_name(imageBean0.getImage_name());
+                    imageBean.setImage_path(imageBean0.getImage_path());
+                    imageBeen.add(imageBean);
+                }
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(ARG_DATA, imageBeen);
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
+                albumPicker = null;
+            }
             return true;
         } else
             return super.onOptionsItemSelected(item);

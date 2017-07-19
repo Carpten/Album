@@ -68,18 +68,17 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
-            android:background="#e8e8e8"
+            android:background="@color/ysq_album_bottom"
             tools:ignore="RtlHardcoded">
 
             <TextView
-                android:id="@+id/tv_original_picture"
+                android:id="@+id/tv_choose_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:text="@string/ysq_origin_picture"
+                android:text="@string/ysq_choose_num"
                 android:textColor="@color/textBlack" />
-
 
             <TextView
                 android:id="@+id/tv_preview"
@@ -87,11 +86,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_toRightOf="@id/tv_original_picture"
-                android:gravity="right"
+                android:layout_marginRight="@dimen/album_bottom_margin"
+                android:background="@drawable/ysq_btn_selector"
+                android:gravity="center"
+                android:onClick="startPreview"
+                android:paddingBottom="@dimen/album_bottom_padding_vetical"
+                android:paddingLeft="@dimen/album_bottom_padding_horizonal"
+                android:paddingRight="@dimen/album_bottom_padding_horizonal"
+                android:paddingTop="@dimen/album_bottom_padding_vetical"
                 android:text="@string/ysq_preview"
-                android:textColor="@color/textBlack" />
+                android:textColor="@color/textBlack"
+                tools:ignore="RelativeOverlap" />
 
             <View
                 android:layout_width="match_parent"
@@ -105,6 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/bottom"
+            android:clipToPadding="false"
             android:overScrollMode="never"
             android:padding="@dimen/album_divide"
             android:scrollbars="vertical" />

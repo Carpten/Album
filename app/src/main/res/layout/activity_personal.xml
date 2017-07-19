@@ -39,31 +39,24 @@
     </com.ysq.example.album.view.FitScrollView>
 
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/iv_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:layout_height="@dimen/toolbar_height"
+        android:alpha="0"
+        android:contentDescription="@null"
+        android:fitsSystemWindows="true"
+        android:scaleType="matrix"
+        android:src="@color/colorPrimary" />
 
-        <ImageView
-            android:id="@+id/iv_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:alpha="0"
-            android:contentDescription="@null"
-            android:scaleType="matrix"
-            android:src="@color/colorPrimary" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:fitsSystemWindows="true"
-            android:paddingTop="@dimen/toolbar_padding_top"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/personal_name"
-            app:titleTextColor="@android:color/white" />
-
-    </RelativeLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:title="@string/personal_name"
+        app:titleTextColor="@android:color/white" />
 
 </android.support.design.widget.CoordinatorLayout>
 

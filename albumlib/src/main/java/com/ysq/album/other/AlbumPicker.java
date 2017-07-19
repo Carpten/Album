@@ -7,7 +7,7 @@ import android.util.SparseArray;
 
 import com.ysq.album.R;
 import com.ysq.album.bean.BucketBean;
-import com.ysq.album.bean.ImageBean;
+import com.ysq.album.bean.ImageBean0;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class AlbumPicker {
 
     private List<BucketBean> mBuckets = new ArrayList<>();
 
-    private List<ImageBean> mSelectedImageBeen = new ArrayList<>();
+    private List<ImageBean0> mSelectedImageBeen = new ArrayList<>();
 
     public AlbumPicker(Context context) {
         Cursor cursor = context.getContentResolver().query(
@@ -40,7 +40,7 @@ public class AlbumPicker {
                 , "date_modified desc");
         SparseArray<BucketBean> bucketSparse = new SparseArray<>();
         BucketBean totalBucketBean = new BucketBean();
-        totalBucketBean.setImageBeen(new ArrayList<ImageBean>());
+        totalBucketBean.setImageBeen(new ArrayList<ImageBean0>());
         totalBucketBean.setBucket_name(context.getString(R.string.ysq_all_images));
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -49,7 +49,7 @@ public class AlbumPicker {
                 int imageId = cursor.getInt(2);
                 String imageName = cursor.getString(3);
                 String imagePath = cursor.getString(4);
-                ImageBean imageBean = new ImageBean();
+                ImageBean0 imageBean = new ImageBean0();
                 imageBean.setImage_id(imageId);
                 imageBean.setImage_name(imageName);
                 imageBean.setImage_path(imagePath);
@@ -57,7 +57,7 @@ public class AlbumPicker {
                     BucketBean bucketBean = new BucketBean();
                     bucketBean.setBucket_id(bucketId);
                     bucketBean.setBucket_name(bucketName);
-                    bucketBean.setImageBeen(new ArrayList<ImageBean>());
+                    bucketBean.setImageBeen(new ArrayList<ImageBean0>());
                     bucketBean.addImageBean(imageBean);
                     bucketSparse.put(bucketId, bucketBean);
                 } else {
@@ -87,17 +87,17 @@ public class AlbumPicker {
         return mSelectedImageBeen.size();
     }
 
-    public void add(ImageBean imageBean) {
-        if (getCurrentCount() < getMaxCount())
+    public void add(ImageBean0 imageBean) {
+        if (getCurrentCount() < getMaxCount() && !mSelectedImageBeen.contains(imageBean))
             mSelectedImageBeen.add(imageBean);
 
     }
 
-    public void remove(ImageBean imageBean) {
+    public void remove(ImageBean0 imageBean) {
         mSelectedImageBeen.remove(imageBean);
     }
 
-    public List<ImageBean> getSelectImages() {
+    public List<ImageBean0> getSelectImages() {
         return mSelectedImageBeen;
     }
 }

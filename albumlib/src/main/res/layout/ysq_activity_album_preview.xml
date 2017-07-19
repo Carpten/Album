@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/ysq_preview_dark"
@@ -11,10 +13,26 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true" />
 
-    <com.ysq.album.view.AlbumCheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="选择" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/ysq_mask0">
+
+        <com.ysq.album.view.AlbumCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="56dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="@string/ysq_choose"
+            android:textColor="@android:color/white"
+            app:theme="@style/AlbumCheckBox"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

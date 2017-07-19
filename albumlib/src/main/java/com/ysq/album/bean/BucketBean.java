@@ -13,7 +13,7 @@ public class BucketBean {
 
     private String bucket_name;
 
-    private List<ImageBean> imageBeen;
+    private List<ImageBean0> imageBeen;
 
 
     public int getBucket_id() {
@@ -32,15 +32,15 @@ public class BucketBean {
         this.bucket_name = bucket_name;
     }
 
-    public List<ImageBean> getImageBeen() {
+    public List<ImageBean0> getImageBeen() {
         return imageBeen;
     }
 
-    public void setImageBeen(List<ImageBean> imageBeen) {
+    public void setImageBeen(List<ImageBean0> imageBeen) {
         this.imageBeen = imageBeen;
     }
 
-    public void addImageBean(ImageBean imageBean) {
+    public void addImageBean(ImageBean0 imageBean) {
         this.imageBeen.add(imageBean);
     }
 }

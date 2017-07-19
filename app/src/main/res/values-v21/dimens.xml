@@ -1,5 +1,4 @@
 <resources>
     <dimen name="toolbar_height">81dp</dimen>
-    <dimen name="toolbar_padding_top">25dp</dimen>
     <dimen name="personal_head_height">240dp</dimen>
 </resources>
