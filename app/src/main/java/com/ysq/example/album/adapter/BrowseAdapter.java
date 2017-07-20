@@ -51,12 +51,15 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(mActivity.getResources(), BROWSE_IDS[position], options);
         int picW, picH;
-        if (options.outWidth >= options.outHeight) {
-            picW = mPicSize * options.outWidth / options.outHeight;
+        if (options.outWidth > options.outHeight) {
+            picW = mPicSize * options.outWidth / options.outHeight + 1;
+            picH = mPicSize;
+        } else if (options.outWidth == options.outHeight) {
+            picW = mPicSize;
             picH = mPicSize;
         } else {
             picW = mPicSize;
-            picH = mPicSize * options.outHeight / options.outWidth;
+            picH = mPicSize * options.outHeight / options.outWidth + 1;
         }
         Glide.with(mActivity).load(BROWSE_IDS[position]).placeholder(R.drawable.ic_placeholder)
                 .override(picW, picH).into(holder.imageView);

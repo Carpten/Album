@@ -25,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void picSelect(View view) {
-        startActivityForResult(new Intent(MainActivity.this, AlbumActivity.class), 1000);
+        Intent intent = new Intent(MainActivity.this, AlbumActivity.class);
+        intent.putExtra(AlbumActivity.ARG_MAX_COUNT, 8);
+        startActivityForResult(intent, 1000);
     }
 
     public void portraitUpload(View view) {

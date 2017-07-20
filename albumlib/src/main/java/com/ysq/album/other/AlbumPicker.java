@@ -27,13 +27,15 @@ public class AlbumPicker {
             MediaStore.Images.Media.DATA
     };
 
-    private static final int DEFAULT_MAX_COUNT = 9;
+
+    private int mMaxCount;
 
     private List<BucketBean> mBuckets = new ArrayList<>();
 
     private List<ImageBean0> mSelectedImageBeen = new ArrayList<>();
 
-    public AlbumPicker(Context context) {
+    public AlbumPicker(Context context, int maxCount) {
+        mMaxCount = maxCount;
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, STORE_IMAGES
                 , "_size>=? and width>=? and height>=?", new String[]{"8192", "20", "20"}
@@ -80,7 +82,11 @@ public class AlbumPicker {
 
 
     public int getMaxCount() {
-        return DEFAULT_MAX_COUNT;
+        return mMaxCount;
+    }
+
+    public void setMaxCount(int maxCount) {
+        mMaxCount = maxCount;
     }
 
     public int getCurrentCount() {

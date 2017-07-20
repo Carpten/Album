@@ -47,6 +47,8 @@ public class AlbumActivity extends AppCompatActivity {
 
     public static final String ARG_DATA = "ARG_DATA";
 
+    public static final String ARG_MAX_COUNT = "ARG_MAX_COUNT";
+
     private static final int INTENT_CAMERA = 100;
 
     private static final int INTENT_ZOOM = 101;
@@ -58,6 +60,8 @@ public class AlbumActivity extends AppCompatActivity {
     public static final int MODE_PORTRAIT = 1;
 
     private static final int SPAN_COUNT = 4;
+
+    private static final int DEFAULT_MAX_COUNT = 9;
 
     public static AlbumPicker albumPicker;
 
@@ -86,7 +90,7 @@ public class AlbumActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     void initAlbum() {
-        albumPicker = new AlbumPicker(AlbumActivity.this);
+        albumPicker = new AlbumPicker(AlbumActivity.this, getIntent().getIntExtra(ARG_MAX_COUNT, DEFAULT_MAX_COUNT));
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
         mRecyclerView.addItemDecoration(new AlbumDecoration(this));
