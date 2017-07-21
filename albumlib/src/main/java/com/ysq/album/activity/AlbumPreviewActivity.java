@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -12,9 +13,11 @@ import android.widget.CompoundButton;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.ysq.album.R;
+import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.bean.ImageBean0;
 import com.ysq.album.view.AlbumCheckBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,8 +52,12 @@ public class AlbumPreviewActivity extends AppCompatActivity {
         int currentPosition = getIntent().getIntExtra(ARG_INDEX, 0);
         if (mode == MODE_SINGLE)
             mImageBeen = AlbumActivity.albumPicker.getBuckets().get(getIntent().getIntExtra(ARG_BUCKET_INDEX, 0)).getImageBeen();
-        else
-            mImageBeen = AlbumActivity.albumPicker.getSelectImages();
+        else {
+            mImageBeen = new ArrayList<>();
+            for (ImageBean0 bean : AlbumActivity.albumPicker.getSelectImages()) {
+                mImageBeen.add(bean);
+            }
+        }
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setCurrentItem(currentPosition);
@@ -112,6 +119,18 @@ public class AlbumPreviewActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             mImageBeen.get(mViewPager.getCurrentItem()).setSelected(isChecked);
+            RecyclerView recyclerView = AlbumAdapter0.mWeakRecyclerViewRef.get();
+            int childCount = recyclerView.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View childView = recyclerView.getChildAt(i);
+                AlbumAdapter0.VH childViewHolder = (AlbumAdapter0.VH) recyclerView.getChildViewHolder(childView);
+                AlbumAdapter0 adapter = (AlbumAdapter0) recyclerView.getAdapter();
+                if (mImageBeen.get(mViewPager.getCurrentItem()).getImage_path()
+                        .equals(adapter.getPicPath(childViewHolder))) {
+                    adapter.setCheckBox(childViewHolder);
+                    break;
+                }
+            }
             if (isChecked)
                 AlbumActivity.albumPicker.add(mImageBeen.get(mViewPager.getCurrentItem()));
             else

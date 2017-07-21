@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.ysq.example.album.R;
 import com.ysq.example.album.adapter.BrowseAdapter;
 import com.ysq.example.album.transition.AlbumEnterTransition;
@@ -94,7 +95,7 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
             if (mIniting && position == mIndex) {
-                BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerView.get()
+                BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
                         .findViewHolderForLayoutPosition(mIndex);
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .placeholder(viewholder.imageView.getDrawable()).dontAnimate().fitCenter().into(imageview);
@@ -122,7 +123,7 @@ public class PreviewActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             for (int i = 0; i < mViewPager.getChildCount(); i++) {
                 if (transitionName.equals(mViewPager.getChildAt(i).getTransitionName())) {
-                    BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerView.get()
+                    BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
                             .findViewHolderForAdapterPosition(currentItem);
                     ImageView imageView = (ImageView) mViewPager.getChildAt(i);
                     imageView.setImageDrawable(viewholder.imageView.getDrawable());

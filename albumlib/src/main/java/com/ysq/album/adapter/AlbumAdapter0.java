@@ -32,7 +32,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     private List<ImageBean0> mImageBeen;
 
-    public static WeakReference<RecyclerView> mWeakRecyclerView;
+    public static WeakReference<RecyclerView> mWeakRecyclerViewRef;
 
     private int mBucketIndex;
 
@@ -46,7 +46,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        mWeakRecyclerView = new WeakReference<>(recyclerView);
+        mWeakRecyclerViewRef = new WeakReference<>(recyclerView);
     }
 
     @Override
@@ -77,6 +77,10 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
             holder.checkBox.setOnCheckedChangeListener(this);
             holder.checkBox.setOnCannotCheckMoreListener(this);
         }
+    }
+
+    public String getPicPath(VH viewHolder) {
+        return mImageBeen.get(viewHolder.getAdapterPosition()).getImage_path();
     }
 
     @Override

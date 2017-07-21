@@ -205,14 +205,6 @@ public class AlbumActivity extends AppCompatActivity {
                 finish();
                 break;
             case INTENT_PREVIEW:
-                int childCount = mRecyclerView.getChildCount();
-                for (int i = 0; i < childCount; i++) {
-                    View childView = mRecyclerView.getChildAt(i);
-                    AlbumAdapter0.VH childViewHolder = (AlbumAdapter0.VH) mRecyclerView.getChildViewHolder(childView);
-                    AlbumAdapter0 adapter = (AlbumAdapter0) mRecyclerView.getAdapter();
-                    adapter.setCheckBox(childViewHolder);
-                }
-                mRecyclerView.getAdapter().notifyDataSetChanged();
                 refreshSelectNum();
                 break;
         }

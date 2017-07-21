@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference;
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implements View.OnClickListener {
 
-    public static WeakReference<RecyclerView> mWeakRecyclerView;
+    public static WeakReference<RecyclerView> mWeakRecyclerViewRef;
 
     public static final int[] BROWSE_IDS = {R.mipmap.pic0, R.mipmap.pic1, R.mipmap.pic2, R.mipmap.pic3, R.mipmap.pic4
             , R.mipmap.pic5, R.mipmap.pic6, R.mipmap.pic7};
@@ -48,7 +48,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
-        mWeakRecyclerView = new WeakReference<>(recyclerView);
+        mWeakRecyclerViewRef = new WeakReference<>(recyclerView);
     }
 
     @Override
