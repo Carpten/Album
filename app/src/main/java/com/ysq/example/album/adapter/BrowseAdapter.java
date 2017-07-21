@@ -3,7 +3,6 @@ package com.ysq.example.album.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
@@ -19,6 +18,8 @@ import com.ysq.example.album.R;
 import com.ysq.example.album.activity.BrowseActivity;
 import com.ysq.example.album.activity.PreviewActivity;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Author: yangshuiqiang
  * Date:2017/7/5.
@@ -26,7 +27,7 @@ import com.ysq.example.album.activity.PreviewActivity;
 
 public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implements View.OnClickListener {
 
-    public static Drawable drawable;
+    public static WeakReference<RecyclerView> mWeakRecyclerView;
 
     public static final int[] BROWSE_IDS = {R.mipmap.pic0, R.mipmap.pic1, R.mipmap.pic2, R.mipmap.pic3, R.mipmap.pic4
             , R.mipmap.pic5, R.mipmap.pic6, R.mipmap.pic7};
@@ -45,21 +46,24 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mWeakRecyclerView = new WeakReference<>(recyclerView);
+    }
+
+    @Override
     public void onBindViewHolder(VH holder, int position) {
         Glide.clear(holder.imageView);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(mActivity.getResources(), BROWSE_IDS[position], options);
         int picW, picH;
-        if (options.outWidth > options.outHeight) {
-            picW = mPicSize * options.outWidth / options.outHeight + 1;
-            picH = mPicSize;
-        } else if (options.outWidth == options.outHeight) {
-            picW = mPicSize;
+        if (options.outWidth >= options.outHeight) {
+            picW = mPicSize * options.outWidth / options.outHeight;
             picH = mPicSize;
         } else {
             picW = mPicSize;
-            picH = mPicSize * options.outHeight / options.outWidth + 1;
+            picH = mPicSize * options.outHeight / options.outWidth;
         }
         Glide.with(mActivity).load(BROWSE_IDS[position]).placeholder(R.drawable.ic_placeholder)
                 .override(picW, picH).into(holder.imageView);
@@ -80,7 +84,6 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
     @Override
     public void onClick(View v) {
         if (!mActivity.isThrottle()) {
-            drawable = ((ImageView) v).getDrawable();
             Intent intent = new Intent(mActivity, PreviewActivity.class);
             intent.putExtra(PreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
             String tag = (String) v.getTag(R.id.tag_transition_name);

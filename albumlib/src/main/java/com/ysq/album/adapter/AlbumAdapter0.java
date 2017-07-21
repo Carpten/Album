@@ -17,6 +17,7 @@ import com.ysq.album.activity.AlbumPreviewActivity;
 import com.ysq.album.bean.ImageBean0;
 import com.ysq.album.view.AlbumCheckBox;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     private List<ImageBean0> mImageBeen;
 
+    public static WeakReference<RecyclerView> mWeakRecyclerView;
+
     private int mBucketIndex;
 
     public AlbumAdapter0(AlbumActivity albumActivity, int bucketIndex) {
@@ -39,6 +42,12 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
         mImageBeen = AlbumActivity.albumPicker.getBuckets().get(bucketIndex).getImageBeen();
     }
 
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mWeakRecyclerView = new WeakReference<>(recyclerView);
+    }
 
     @Override
     public AlbumAdapter0.VH onCreateViewHolder(ViewGroup parent, int viewType) {

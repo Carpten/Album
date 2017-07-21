@@ -94,8 +94,10 @@ public class PreviewActivity extends AppCompatActivity {
                 }
             }
             if (mIniting && position == mIndex) {
+                BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerView.get()
+                        .findViewHolderForLayoutPosition(mIndex);
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
-                        .placeholder(BrowseAdapter.drawable).dontAnimate().fitCenter().into(imageview);
+                        .placeholder(viewholder.imageView.getDrawable()).dontAnimate().fitCenter().into(imageview);
             } else
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .fitCenter().into(imageview);
@@ -112,7 +114,6 @@ public class PreviewActivity extends AppCompatActivity {
 
     @Override
     public void finishAfterTransition() {
-        BrowseAdapter.drawable = null;
         int currentItem = mViewPager.getCurrentItem();
         Intent intent = new Intent();
         intent.putExtra(ARG_INDEX, currentItem);
@@ -121,6 +122,10 @@ public class PreviewActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 21) {
             for (int i = 0; i < mViewPager.getChildCount(); i++) {
                 if (transitionName.equals(mViewPager.getChildAt(i).getTransitionName())) {
+                    BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerView.get()
+                            .findViewHolderForAdapterPosition(currentItem);
+                    ImageView imageView = (ImageView) mViewPager.getChildAt(i);
+                    imageView.setImageDrawable(viewholder.imageView.getDrawable());
                     setSharedElementCallback(mViewPager.getChildAt(i));
                     break;
                 }
