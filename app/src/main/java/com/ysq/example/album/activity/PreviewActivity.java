@@ -15,7 +15,6 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.ysq.example.album.R;
 import com.ysq.example.album.adapter.BrowseAdapter;
 import com.ysq.example.album.transition.AlbumEnterTransition;
