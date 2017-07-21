@@ -37,7 +37,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
 
     public BrowseAdapter(BrowseActivity activity) {
         mActivity = activity;
-        mPicSize = dp2px(activity, 100);
+        mPicSize = dp2px(activity, 180);
     }
 
     @Override
