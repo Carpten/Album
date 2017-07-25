@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,11 +60,11 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
         BitmapFactory.decodeResource(mActivity.getResources(), BROWSE_IDS[position], options);
         int picW, picH;
         if (options.outWidth >= options.outHeight) {
-            picW = mPicSize * options.outWidth / options.outHeight;
+            picW = Math.round((float) mPicSize * (float) options.outWidth / (float) options.outHeight);
             picH = mPicSize;
         } else {
             picW = mPicSize;
-            picH = mPicSize * options.outHeight / options.outWidth;
+            picH = Math.round((float) mPicSize * (float) options.outHeight / (float) options.outWidth);
         }
         Glide.with(mActivity).load(BROWSE_IDS[position]).placeholder(R.drawable.ic_placeholder)
                 .override(picW, picH).into(holder.imageView);
