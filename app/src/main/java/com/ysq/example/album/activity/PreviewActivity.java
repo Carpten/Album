@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -63,6 +65,7 @@ public class PreviewActivity extends AppCompatActivity {
         }
     }
 
+
     private void setupViewPager() {
         mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setCurrentItem(mIndex);
@@ -101,8 +104,12 @@ public class PreviewActivity extends AppCompatActivity {
             } else
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .fitCenter().into(imageview);
-            container.addView(imageview);
-            return imageview;
+
+            FrameLayout layout = new FrameLayout(container.getContext());
+            layout.setLayoutParams(new ViewPager.LayoutParams());
+            layout.addView(imageview);
+            container.addView(layout);
+            return layout;
         }
 
         @Override
@@ -110,7 +117,6 @@ public class PreviewActivity extends AppCompatActivity {
             container.removeView((View) object);
         }
     };
-
 
     @Override
     public void finishAfterTransition() {
@@ -121,12 +127,12 @@ public class PreviewActivity extends AppCompatActivity {
         String transitionName = getString(R.string.transition_name, currentItem);
         if (Build.VERSION.SDK_INT >= 21) {
             for (int i = 0; i < mViewPager.getChildCount(); i++) {
-                if (transitionName.equals(mViewPager.getChildAt(i).getTransitionName())) {
+                if (transitionName.equals(((FrameLayout) mViewPager.getChildAt(i)).getChildAt(0).getTransitionName())) {
                     BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
                             .findViewHolderForAdapterPosition(currentItem);
-                    ImageView imageView = (ImageView) mViewPager.getChildAt(i);
+                    ImageView imageView = (ImageView) ((FrameLayout) mViewPager.getChildAt(i)).getChildAt(0);
                     imageView.setImageDrawable(viewholder.imageView.getDrawable());
-                    setSharedElementCallback(mViewPager.getChildAt(i));
+                    setSharedElementCallback(((FrameLayout) mViewPager.getChildAt(i)).getChildAt(0));
                     break;
                 }
             }
