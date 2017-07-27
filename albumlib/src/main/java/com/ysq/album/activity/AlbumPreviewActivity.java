@@ -34,9 +34,9 @@ public class AlbumPreviewActivity extends AppCompatActivity {
 
     public static final String ARG_MODE = "ARG_MODE";
 
-    public static final int MODE_SINGLE = 0;
+    public static final int MODE_SELECT = 0;
 
-    public static final int MODE_ALL = 1;
+    public static final int MODE_PREVIEW = 1;
 
     private List<ImageBean0> mImageBeen;
 
@@ -48,9 +48,11 @@ public class AlbumPreviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album_preview);
-        int mode = getIntent().getIntExtra(ARG_MODE, MODE_SINGLE);
+        int mode = getIntent().getIntExtra(ARG_MODE, MODE_SELECT);
         int currentPosition = getIntent().getIntExtra(ARG_INDEX, 0);
-        if (mode == MODE_SINGLE)
+        if (AlbumActivity.albumPicker == null)
+            finish();
+        if (mode == MODE_SELECT)
             mImageBeen = AlbumActivity.albumPicker.getBuckets().get(getIntent().getIntExtra(ARG_BUCKET_INDEX, 0)).getImageBeen();
         else {
             mImageBeen = new ArrayList<>();

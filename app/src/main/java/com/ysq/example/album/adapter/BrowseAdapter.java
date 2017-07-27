@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +37,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
 
     public BrowseAdapter(BrowseActivity activity) {
         mActivity = activity;
-        mPicSize = dp2px(activity, 180);
+        mPicSize = dp2px(activity, 160);
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.ysq.example.album.R;
 import com.ysq.example.album.adapter.BrowseAdapter;
 import com.ysq.example.album.transition.AlbumEnterTransition;
 import com.ysq.example.album.transition.SimpleTransitionListener;
+import com.ysq.example.album.view.PhotoFrameLayout;
 import com.ysq.example.album.view.PreviewViewPager;
 
 import java.util.List;
@@ -105,7 +106,7 @@ public class PreviewActivity extends AppCompatActivity {
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .fitCenter().into(imageview);
 
-            FrameLayout layout = new FrameLayout(container.getContext());
+            PhotoFrameLayout layout = new PhotoFrameLayout(container.getContext());
             layout.setLayoutParams(new ViewPager.LayoutParams());
             layout.addView(imageview);
             container.addView(layout);

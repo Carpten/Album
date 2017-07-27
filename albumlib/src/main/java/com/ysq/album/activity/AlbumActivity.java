@@ -181,7 +181,7 @@ public class AlbumActivity extends AppCompatActivity {
     public void startPreview(View view) {
         if (albumPicker.getSelectImages().size() > 0) {
             Intent intent = new Intent(AlbumActivity.this, AlbumPreviewActivity.class);
-            intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumPreviewActivity.MODE_ALL);
+            intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumPreviewActivity.MODE_PREVIEW);
             startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
         }
     }
@@ -223,7 +223,6 @@ public class AlbumActivity extends AppCompatActivity {
         int i = item.getItemId();
         if (i == android.R.id.home) {
             onBackPressed();
-            albumPicker = null;
             return true;
         } else if (i == R.id.action_done) {
             if (albumPicker.getCurrentCount() > 0) {
@@ -240,7 +239,6 @@ public class AlbumActivity extends AppCompatActivity {
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 finish();
-                albumPicker = null;
             }
             return true;
         } else
