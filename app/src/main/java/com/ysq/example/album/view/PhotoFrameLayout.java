@@ -6,9 +6,7 @@ import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -64,11 +62,9 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean b = mScaleGestureDetector.onTouchEvent(event);
-        boolean b1 = mGestureDetector.onTouchEvent(event);
-        Log.i("test", "b:" + b + ",b1:" + b1);
-        boolean b2 = MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN;
-        return mIsScaling || b1 || b2;
+        mScaleGestureDetector.onTouchEvent(event);
+        mGestureDetector.onTouchEvent(event);
+        return true;
     }
 
     @Override
