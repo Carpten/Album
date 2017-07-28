@@ -60,6 +60,7 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
         mGestureDetector = new GestureDetector(getContext(), this);
     }
 
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mScaleGestureDetector.onTouchEvent(event);
