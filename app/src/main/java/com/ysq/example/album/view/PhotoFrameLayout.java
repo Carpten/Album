@@ -7,10 +7,10 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -35,8 +35,6 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     private boolean mIsScaling;
 
-    private int mOffset;
-
     public PhotoFrameLayout(@NonNull Context context) {
         super(context);
         init();
@@ -54,12 +52,10 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     private void init() {
         mTotalScaleFactor = 1;
-        mOffset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
         mIsScaling = false;
         mScaleGestureDetector = new ScaleGestureDetector(getContext(), this);
         mGestureDetector = new GestureDetector(getContext(), this);
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -96,9 +92,9 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
                 layoutParams.topMargin = (int) (mFocusY
                         - (mFocusY - layoutParams.topMargin) * realScaleFactor) - 1;
                 if (-layoutParams.topMargin < (getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2)
-                    layoutParams.topMargin = -(int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2) - mOffset;
+                    layoutParams.topMargin = -(int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2);
                 if (-layoutParams.topMargin > (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight()))
-                    layoutParams.topMargin = -(int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight()) + mOffset;
+                    layoutParams.topMargin = -(int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight());
             }
             if (iw * mTotalScaleFactor <= getWidth()) {
                 layoutParams.leftMargin = (int) ((getWidth() - getWidth() * mTotalScaleFactor) / 2);
@@ -106,9 +102,9 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
                 layoutParams.leftMargin = (int) (mFocusX
                         - (mFocusX - layoutParams.leftMargin) * realScaleFactor);
                 if (-layoutParams.leftMargin < (getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2)
-                    layoutParams.leftMargin = -(int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2) - mOffset;
+                    layoutParams.leftMargin = -(int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2);
                 if (-layoutParams.leftMargin > (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth()))
-                    layoutParams.leftMargin = -(int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth()) + mOffset;
+                    layoutParams.leftMargin = -(int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth());
 
             }
             layoutParams.width = (int) (getWidth() * mTotalScaleFactor);
@@ -135,6 +131,7 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     @Override
     public boolean onDown(MotionEvent e) {
+        getParent().requestDisallowInterceptTouchEvent(true);
         return false;
     }
 
@@ -150,10 +147,9 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (mIsScaling)
+        if (mIsScaling) {
             return true;
-        else {
-            boolean ret = true;
+        } else {
             int[] imageViewSize = getImageViewSize();
             int iw = imageViewSize[0];
             int ih = imageViewSize[1];
@@ -163,25 +159,29 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
             if (iw * mTotalScaleFactor > getWidth()) {
                 layoutParams.leftMargin += dx;
                 if (-layoutParams.leftMargin < (getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2) {
-                    layoutParams.leftMargin = -(int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2) - mOffset;
-                    ret = false;
+                    layoutParams.leftMargin = -(int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2);
+                    getParent().requestDisallowInterceptTouchEvent(false);
                 } else if (-layoutParams.leftMargin > (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth())) {
-                    layoutParams.leftMargin = -(int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth()) + mOffset;
-                    ret = false;
+                    layoutParams.leftMargin = -(int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth());
+                    getParent().requestDisallowInterceptTouchEvent(false);
+                } else {
+                    MotionEvent obtain = MotionEvent.obtain(0, 0, MotionEvent.ACTION_DOWN
+                            , e2.getX() - distanceX, e2.getY() - distanceY, 0);
+                    ((View) getParent()).onTouchEvent(obtain);
                 }
+            } else {
+                getParent().requestDisallowInterceptTouchEvent(false);
             }
             if (ih * mTotalScaleFactor > getHeight()) {
                 layoutParams.topMargin += dy;
                 if (-layoutParams.topMargin < (getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2) {
-                    layoutParams.topMargin = -(int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2) - mOffset;
-                    ret = false;
+                    layoutParams.topMargin = -(int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2);
                 } else if (-layoutParams.topMargin > (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight())) {
-                    layoutParams.topMargin = -(int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight()) + mOffset;
-                    ret = false;
+                    layoutParams.topMargin = -(int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight());
                 }
             }
             getChildImageView().setLayoutParams(layoutParams);
-            return ret;
+            return true;
         }
     }
 
@@ -192,7 +192,12 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
+        if (mIsScaling)
+            return true;
+        else {
+            getParent().requestDisallowInterceptTouchEvent(true);
+            return true;
+        }
     }
 
 
