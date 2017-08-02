@@ -1,15 +1,17 @@
 package com.ysq.album.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ysq.album.R;
 import com.ysq.album.adapter.AlbumAdapter;
@@ -35,10 +38,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
-@RuntimePermissions
 public class AlbumActivity extends AppCompatActivity {
 
     public static final String ARG_PATH = "ARG_INDEX";
@@ -48,6 +48,10 @@ public class AlbumActivity extends AppCompatActivity {
     public static final String ARG_DATA = "ARG_DATA";
 
     public static final String ARG_MAX_COUNT = "ARG_MAX_COUNT";
+
+    public static final int PERMISSIONS_READ_EXTERNAL_STORAGE = 200;
+
+    public static final int PERMISSIONS_CAMERA = 201;
 
     private static final int INTENT_CAMERA = 100;
 
@@ -83,12 +87,17 @@ public class AlbumActivity extends AppCompatActivity {
         View bottomView = findViewById(R.id.bottom);
         bottomView.setVisibility(mMode == MODE_SELECT ? View.VISIBLE : View.GONE);
         invalidateOptionsMenu();
-        AlbumActivityPermissionsDispatcher.initAlbumWithCheck(this);
+        if (ContextCompat.checkSelfPermission(AlbumActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AlbumActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSIONS_READ_EXTERNAL_STORAGE);
+        } else {
+            initAlbum();
+        }
     }
 
 
-    @SuppressLint("InlinedApi")
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     void initAlbum() {
         albumPicker = new AlbumPicker(AlbumActivity.this, getIntent().getIntExtra(ARG_MAX_COUNT, DEFAULT_MAX_COUNT));
         @SuppressWarnings("unchecked") List<ImageBean> imageBeen = (List<ImageBean>) getIntent().getSerializableExtra(ARG_DATA);
@@ -105,7 +114,36 @@ public class AlbumActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        AlbumActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        switch (requestCode) {
+            case PERMISSIONS_READ_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initAlbum();
+                } else {
+                    new MaterialDialog.Builder(AlbumActivity.this)
+                            .cancelable(false)
+                            .content(R.string.permissions_read_external_storage_deny)
+                            .positiveText(R.string.ysq_dialog_positive)
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    finish();
+                                }
+                            })
+                            .show();
+                }
+                break;
+            case PERMISSIONS_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    takePhoto();
+                } else {
+                    new MaterialDialog.Builder(AlbumActivity.this)
+                            .cancelable(false)
+                            .content(R.string.permissions_carmea_deny)
+                            .positiveText(R.string.ysq_dialog_positive)
+                            .show();
+                }
+                break;
+        }
     }
 
 
@@ -144,10 +182,16 @@ public class AlbumActivity extends AppCompatActivity {
     }
 
     public void takePhoto() {
-        AlbumActivityPermissionsDispatcher.startPhotoWithCheck(this);
+        if (ContextCompat.checkSelfPermission(AlbumActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AlbumActivity.this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSIONS_CAMERA);
+        } else {
+            startPhoto();
+        }
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA})
     public void startPhoto() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

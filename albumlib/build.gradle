@@ -38,7 +38,6 @@ dependencies {
     compile 'com.github.chrisbanes:PhotoView:2.0.0'
     compile 'com.github.bumptech.glide:glide:3.8.0'
     testCompile 'junit:junit:4.12'
-    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:2.3.2'
 }
 
 

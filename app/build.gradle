@@ -23,6 +23,12 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
@@ -41,5 +47,6 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.8.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile project(':albumlib')
+//    compile project(':albumlib')
+    compile(name: 'albumlib-release', ext: 'aar')
 }
