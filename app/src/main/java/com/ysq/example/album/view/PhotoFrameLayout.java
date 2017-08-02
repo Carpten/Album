@@ -131,7 +131,8 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     @Override
     public boolean onDown(MotionEvent e) {
-        getParent().requestDisallowInterceptTouchEvent(true);
+        if (getChildImageView().getDrawable() != null)
+            getParent().requestDisallowInterceptTouchEvent(true);
         return false;
     }
 
@@ -147,7 +148,7 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (mIsScaling) {
+        if (mIsScaling || getChildImageView().getDrawable() == null) {
             return true;
         } else {
             int[] imageViewSize = getImageViewSize();
@@ -230,24 +231,31 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
             mScroller = new Scroller(getContext());
             lastX = startX;
             lastY = startY;
-            int[] imageViewSize = getImageViewSize();
-            int iw = imageViewSize[0];
-            int ih = imageViewSize[1];
-            LayoutParams layoutParams = (LayoutParams) getChildImageView().getLayoutParams();
             int minX, maxX;
-            if (iw * mTotalScaleFactor > getWidth()) {
-                minX = startX - (int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth() + layoutParams.leftMargin);
-                maxX = startX - (int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2 + layoutParams.leftMargin);
+            int minY, maxY;
+            if (getChildImageView().getDrawable() != null) {
+                int[] imageViewSize = getImageViewSize();
+                int iw = imageViewSize[0];
+                int ih = imageViewSize[1];
+                LayoutParams layoutParams = (LayoutParams) getChildImageView().getLayoutParams();
+                if (iw * mTotalScaleFactor > getWidth()) {
+                    minX = startX - (int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth() + layoutParams.leftMargin);
+                    maxX = startX - (int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2 + layoutParams.leftMargin);
+                } else {
+                    minX = startX;
+                    maxX = startX;
+                }
+                if (ih * mTotalScaleFactor > getHeight()) {
+                    minY = startY - (int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight() + layoutParams.topMargin);
+                    maxY = startY - (int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2 + layoutParams.topMargin);
+                } else {
+                    Log.i("test", "oh my god");
+                    minY = startY;
+                    maxY = startY;
+                }
             } else {
                 minX = startX;
                 maxX = startX;
-            }
-            int minY, maxY;
-            if (ih * mTotalScaleFactor > getHeight()) {
-                minY = startY - (int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight() + layoutParams.topMargin);
-                maxY = startY - (int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2 + layoutParams.topMargin);
-            } else {
-                Log.i("test", "oh my god");
                 minY = startY;
                 maxY = startY;
             }
@@ -257,7 +265,7 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
         @Override
         public void run() {
             if (mScroller.isFinished()) return;
-            if (mScroller.computeScrollOffset() && !isDown) {
+            if (mScroller.computeScrollOffset() && !isDown && getChildImageView().getDrawable() != null) {
                 int dx = mScroller.getCurrX() - lastX;
                 int dy = mScroller.getCurrY() - lastY;
                 lastX = mScroller.getCurrX();

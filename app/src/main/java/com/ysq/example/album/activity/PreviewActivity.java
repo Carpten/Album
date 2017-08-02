@@ -103,7 +103,8 @@ public class PreviewActivity extends AppCompatActivity {
                         .findViewHolderForLayoutPosition(mIndex);
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .placeholder(viewholder.imageView.getDrawable()).dontAnimate().fitCenter().into(imageview);
-            } else
+            }
+            else
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .fitCenter().into(imageview);
 
