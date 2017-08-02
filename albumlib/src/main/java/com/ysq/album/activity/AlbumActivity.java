@@ -91,6 +91,9 @@ public class AlbumActivity extends AppCompatActivity {
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     void initAlbum() {
         albumPicker = new AlbumPicker(AlbumActivity.this, getIntent().getIntExtra(ARG_MAX_COUNT, DEFAULT_MAX_COUNT));
+        @SuppressWarnings("unchecked") List<ImageBean> imageBeen = (List<ImageBean>) getIntent().getSerializableExtra(ARG_DATA);
+        if (imageBeen != null && imageBeen.size() > 0)
+            albumPicker.setSelectImages(imageBeen);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT));
         mRecyclerView.addItemDecoration(new AlbumDecoration(this));

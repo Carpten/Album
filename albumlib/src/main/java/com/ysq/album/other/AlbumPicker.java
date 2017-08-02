@@ -7,6 +7,7 @@ import android.util.SparseArray;
 
 import com.ysq.album.R;
 import com.ysq.album.bean.BucketBean;
+import com.ysq.album.bean.ImageBean;
 import com.ysq.album.bean.ImageBean0;
 
 import java.util.ArrayList;
@@ -105,5 +106,21 @@ public class AlbumPicker {
 
     public List<ImageBean0> getSelectImages() {
         return mSelectedImageBeen;
+    }
+
+    public void setSelectImages(List<ImageBean> images) {
+        if (images != null) {
+            for (ImageBean imageBean : images) {
+                List<ImageBean0> imageBeen0 = mBuckets.get(0).getImageBeen();
+                for (ImageBean0 imageBean0 : imageBeen0) {
+                    if (imageBean.getImage_path().equals(imageBean0.getImage_path())) {
+                        imageBean0.setSelected(true);
+                        add(imageBean0);
+                        break;
+                    }
+                }
+
+            }
+        }
     }
 }

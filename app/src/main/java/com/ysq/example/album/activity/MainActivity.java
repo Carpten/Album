@@ -12,7 +12,7 @@ import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.bean.ImageBean;
 import com.ysq.example.album.R;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +24,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
+    private ArrayList<ImageBean> mImageBeen;
+
     public void picSelect(View view) {
         Intent intent = new Intent(MainActivity.this, AlbumActivity.class);
         intent.putExtra(AlbumActivity.ARG_MAX_COUNT, 8);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(AlbumActivity.ARG_DATA, mImageBeen);
+        intent.putExtras(bundle);
         startActivityForResult(intent, 1000);
     }
 
@@ -41,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1000 && resultCode == RESULT_OK) {
-            @SuppressWarnings("unchecked")
-            List<ImageBean> imageBeen = (List<ImageBean>) data.getSerializableExtra(AlbumActivity.ARG_DATA);
-            for (ImageBean imageBean : imageBeen) {
+            //noinspection unchecked
+            mImageBeen = (ArrayList<ImageBean>) data.getSerializableExtra(AlbumActivity.ARG_DATA);
+            for (ImageBean imageBean : mImageBeen) {
                 Log.i("test", imageBean.getImage_path());
             }
-            Toast.makeText(this, "选中" + imageBeen.size() + "张", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "选中" + mImageBeen.size() + "张", Toast.LENGTH_SHORT).show();
         }
     }
 }
