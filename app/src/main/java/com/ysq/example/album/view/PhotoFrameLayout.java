@@ -6,7 +6,9 @@ import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -62,8 +64,12 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
     public boolean onTouchEvent(MotionEvent event) {
         mScaleGestureDetector.onTouchEvent(event);
         mGestureDetector.onTouchEvent(event);
+        if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN)
+            isDown = true;
         return true;
     }
+
+    boolean isDown = false;
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -208,7 +214,8 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
         if (mIsScaling)
             return true;
         else {
-//            new FlingRunnable((int) e2.getX(), (int) e2.getY(), (int) velocityX, (int) velocityY).run();
+            isDown = false;
+            new FlingRunnable((int) e2.getX(), (int) e2.getY(), (int) velocityX, (int) velocityY).run();
             return false;
         }
     }
@@ -227,23 +234,48 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
             int iw = imageViewSize[0];
             int ih = imageViewSize[1];
             LayoutParams layoutParams = (LayoutParams) getChildImageView().getLayoutParams();
-            int maxY = startY - (int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2 + layoutParams.topMargin);
-            int minY = startY - (int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight() + layoutParams.topMargin);
-            int maxX = startX - (int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2 + layoutParams.leftMargin);
-            int minX = startX - (int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth() + layoutParams.leftMargin);
+            int minX, maxX;
+            if (iw * mTotalScaleFactor > getWidth()) {
+                minX = startX - (int) (getWidth() * mTotalScaleFactor / 2 + iw * mTotalScaleFactor / 2 - getWidth() + layoutParams.leftMargin);
+                maxX = startX - (int) ((getWidth() * mTotalScaleFactor - iw * mTotalScaleFactor) / 2 + layoutParams.leftMargin);
+            } else {
+                minX = startX;
+                maxX = startX;
+            }
+            int minY, maxY;
+            if (ih * mTotalScaleFactor > getHeight()) {
+                minY = startY - (int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight() + layoutParams.topMargin);
+                maxY = startY - (int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2 + layoutParams.topMargin);
+            } else {
+                Log.i("test", "oh my god");
+                minY = startY;
+                maxY = startY;
+            }
             mScroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
         }
 
         @Override
         public void run() {
-            while (true) {
-                if (mScroller.isFinished()) return;
-                try {
-                    Thread.sleep(SIXTY_FPS_INTERVAL);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (mScroller.isFinished()) return;
+            if (mScroller.computeScrollOffset() && !isDown) {
+                int dx = mScroller.getCurrX() - lastX;
+                int dy = mScroller.getCurrY() - lastY;
+                lastX = mScroller.getCurrX();
+                lastY = mScroller.getCurrY();
+                int[] imageViewSize = getImageViewSize();
+                int iw = imageViewSize[0];
+                int ih = imageViewSize[1];
+                LayoutParams layoutParams = (LayoutParams) getChildImageView().getLayoutParams();
+                if (iw * mTotalScaleFactor > getWidth()) {
+                    layoutParams.leftMargin += dx;
+                    adjustHorizonBounds();
                 }
-                mScroller.computeScrollOffset();
+                if (ih * mTotalScaleFactor > getHeight()) {
+                    layoutParams.topMargin += dy;
+                    adjustVeticalBounds();
+                }
+                getChildImageView().setLayoutParams(layoutParams);
+                getChildImageView().postDelayed(this, SIXTY_FPS_INTERVAL);
             }
         }
     }
