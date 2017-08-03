@@ -10,11 +10,11 @@
 # Dependency
 
 Add this in your root build.gradle file (not your module build.gradle file):
-<br> allprojects {
-<br>  repositories {
-<br>   maven { url "https://jitpack.io" }
-<br>  }
-<br> }
+<br>&nbsp;allprojects {
+<br>&nbsp;&nbsp;repositories {
+<br>&nbsp;&nbsp;&nbsp;maven { url "https://jitpack.io" }
+<br>&nbsp;&nbsp;}
+<br>&nbsp;}
 <br>Then, add the library to your module build.gradle
 <br>dependencies {
 <br>compile 'com.github.Carpten:Album:1.0'
