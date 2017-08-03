@@ -5,17 +5,7 @@
 <br>场景三：多张图片的点击预览的场景。
 
 # demo
-动态图太卡了，真机看效果吧 https://github.com/Carpten/Album/blob/master/demo.apk
+https://github.com/Carpten/Album/blob/master/demo.apk
 
 # Dependency
-
-Add this in your root build.gradle file (not your module build.gradle file):
-<br>  allprojects {
-<br>    repositories {
-<br>      maven { url "https://jitpack.io" }
-<br>    }
-<br>  }
-<br>Then, add the library to your module build.gradle
-<br>dependencies {
-<br>compile 'com.github.Carpten:Album:1.0'
-<br>}
+compile 'com.github.Carpten:Album:1.0'
