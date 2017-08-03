@@ -4,7 +4,7 @@
 <br>场景二：头像选择编辑，并演示了一种以头像模糊作为工具栏背景的场景。
 <br>场景三：多张图片的点击预览的场景。
 
-# demo
+# Demo
 https://github.com/Carpten/Album/blob/master/demo.apk
 
 # Dependency
