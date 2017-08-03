@@ -24,7 +24,7 @@ import android.widget.Scroller;
 
 public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetector.OnScaleGestureListener, GestureDetector.OnGestureListener {
 
-    private static final float MAX_SCALE_FACTOR = 8;
+    private static final float MAX_SCALE_FACTOR = 4;
 
     private static final float MIN_SCALE_FACTOR = 1;
 
