@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 
 /**
- * 作者:ysq
- * 时间:2017/2/16.
+ * author:ysq
+ * date:2017/2/16.
  */
 
 public class FitScrollView extends ObservableScrollView {

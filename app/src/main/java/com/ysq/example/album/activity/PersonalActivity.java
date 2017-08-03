@@ -74,7 +74,6 @@ public class PersonalActivity extends AppCompatActivity {
         @Override
         public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
             Bitmap blurBitmap = resource.copy(resource.getConfig(), true);
-            //如果对头像图片没有限制，请测试后决定是否需要在非线程中使用
             float[] colorArray = {0.8f, 0, 0, 0, 0, 0, 0.8f, 0, 0, 0, 0, 0, 0.8f, 0, 0, 0, 0, 0, 1, 0};
             mIvHeadBackground.setImageBitmap(BitmapUtil.getColorBitmap(StackBlur.blurNatively(BitmapUtil.getScaleBitmap(blurBitmap, 8), 6, true), colorArray));
             mIvHeadBackground.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

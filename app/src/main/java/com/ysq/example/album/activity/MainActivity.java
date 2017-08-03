@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             for (ImageBean imageBean : mImageBeen) {
                 Log.i("test", imageBean.getImage_path());
             }
-            Toast.makeText(this, "选中" + mImageBeen.size() + "张", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.picture_select_num, mImageBeen.size()), Toast.LENGTH_SHORT).show();
         }
     }
 }

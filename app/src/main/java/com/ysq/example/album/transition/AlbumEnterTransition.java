@@ -24,7 +24,6 @@ import com.ysq.example.album.R;
 
 public class AlbumEnterTransition extends ChangeBounds {
 
-    //偏移一个像素
     private int mOffset = 2;
 
     private static final String PROPNAME_BOUNDS = "android:changeBounds:bounds";
