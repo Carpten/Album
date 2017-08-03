@@ -7,8 +7,8 @@ import android.view.MotionEvent;
 
 
 /**
- * 作者:ysq
- * 时间:2017/2/16.
+ * author:ysq
+ * date:2017/2/16.
  */
 
 public class PreviewViewPager extends ViewPager {
