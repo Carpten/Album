@@ -19,5 +19,8 @@ allprojects {
 ```
 然后添加依赖：
 
-```compile 'com.github.Carpten:Album:1.0'
+```gradle
+dependencies {
+    compile 'com.github.Carpten:Album:1.0'
+}
 ```
