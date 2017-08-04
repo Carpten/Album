@@ -16,6 +16,5 @@ https://github.com/Carpten/Album/blob/master/demo.apk
          maven { url 'https://www.jitpack.io' }
      }
  }
- 
  添加依赖：
  compile 'com.github.Carpten:Album:1.0'
