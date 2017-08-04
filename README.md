@@ -8,4 +8,4 @@
 https://github.com/Carpten/Album/blob/master/demo.apk
 
 # Dependency
-compile      'com.github.Carpten:Album:1.0'
+	compile      'com.github.Carpten:Album:1.0'
