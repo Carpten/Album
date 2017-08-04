@@ -9,11 +9,15 @@ https://github.com/Carpten/Album/blob/master/demo.apk
 
 # Dependency
 首先在工程build.gradle中添加:
-<br>allprojects {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;repositories {
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maven { url 'https://www.jitpack.io' }
-<br>&nbsp;&nbsp;&nbsp;&nbsp;}
-<br>}
-<br>然后添加依赖：
-<br>compile 'com.github.Carpten:Album:1.0'
+
+```gradle
+allprojects {
+	repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+然后添加依赖：
+
+```compile 'com.github.Carpten:Album:1.0'
+```
