@@ -10,7 +10,7 @@ https://github.com/Carpten/Album/blob/master/demo.apk
 # Dependency
 首先在工程build.gradle中添加:
 
- allprojects {
+    allprojects {
      repositories {
          ...
          maven { url 'https://www.jitpack.io' }
