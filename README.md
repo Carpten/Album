@@ -24,3 +24,9 @@ dependencies {
     compile 'com.github.Carpten:Album:1.0'
 }
 ```
+
+# Usage
+```gradle
+Intent intent = new Intent(thisactivity, AlbumActivity.class);
+startActivityForResult(intent, INTENT_CODE);
+```
