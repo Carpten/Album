@@ -151,6 +151,7 @@ public class AlbumActivity extends AppCompatActivity {
         if (albumPicker.getBuckets().get(0).getImageBeen().size() == 0) {
             findViewById(R.id.iv_switch_bucket).setVisibility(View.GONE);
         } else {
+            findViewById(R.id.iv_switch_bucket).setVisibility(View.VISIBLE);
             findViewById(R.id.switch_bucket).setOnClickListener(mSwitchIconClickListener);
         }
     }
