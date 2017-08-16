@@ -42,9 +42,10 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
-图片选择：
+多张图片选择：
 ```gradle
 Intent intent = new Intent(thisactivity, AlbumActivity.class);
+intent.putExtra(AlbumActivity.ARG_MODE, AlbumActivity.MODE_MULTI_SELECT);
 intent.putExtra(AlbumActivity.ARG_MAX_COUNT, 8);//图片最大数量
 Bundle bundle = new Bundle();
 bundle.putSerializable(AlbumActivity.ARG_DATA, mImageBeen);//传入已选择的图片
@@ -54,7 +55,7 @@ startActivityForResult(intent, INTENT_CODE);
 
 ```gradle
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	if (resultCode == RESULT_OK) {
+	if (requestCode == INTENT_CODE && resultCode == RESULT_OK) {
 		ArrayList<ImageBean> imageBeen = (ArrayList<ImageBean>) data.getSerializableExtra(AlbumActivity.ARG_DATA);
 		...
 	}
