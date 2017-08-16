@@ -61,3 +61,19 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	}
 }
 ```
+
+单张图片选择：
+```gradle
+Intent intent = new Intent(thisactivity, AlbumActivity.class);
+intent.putExtra(AlbumActivity.ARG_MODE, AlbumActivity.MODE_SINGLE_SELECT);
+startActivityForResult(intent, INTENT_CODE);
+```
+
+```gradle
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	if (requestCode == INTENT_CODE && resultCode == RESULT_OK) {
+		ImageBean imageBean = (ImageBean) data.getSerializableExtra(AlbumActivity.ARG_DATA);
+		...
+	}
+}
+```
