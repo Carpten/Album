@@ -21,7 +21,7 @@ allprojects {
 
 ```gradle
 dependencies {
-    compile 'com.github.Carpten:Album:2.0'
+    compile 'com.github.Carpten:Album:2.1'
 }
 ```
 
