@@ -67,7 +67,7 @@ public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         String path = (String) v.getTag(R.id.tag_path);
-        mAlbumActivity.startZoom(Uri.fromFile(new File(path)));
+        mAlbumActivity.startZoom(new File(path));
     }
 
     @Override

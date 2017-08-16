@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -38,6 +39,8 @@ import com.ysq.album.other.AlbumPicker;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class AlbumActivity extends AppCompatActivity {
@@ -198,12 +201,24 @@ public class AlbumActivity extends AppCompatActivity {
         }
     }
 
+    private Uri getUri(File file) {
+        if (Build.VERSION.SDK_INT < 24) {
+            return Uri.fromFile(file);
+        } else {
+            return getUriForFile(AlbumActivity.this,
+                    "com.ysq.album.fileprovider", file);
+        }
+    }
+
     public void startPhoto() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             File file = new File(getExternalCacheDir(), getString(R.string.ysq_album_original));
-            Uri uri = Uri.fromFile(file);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, getUri(file));
+            if (Build.VERSION.SDK_INT >= 24) {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
             intent.putExtra("return-data", false);
             intent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             startActivityForResult(intent, INTENT_CAMERA);
@@ -214,10 +229,10 @@ public class AlbumActivity extends AppCompatActivity {
     /**
      * 裁剪图片方法实现
      */
-    public void startZoom(Uri uri) {
+    public void startZoom(File file) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent("com.android.camera.action.CROP");
-            intent.setDataAndType(uri, "image/*");
+            intent.setDataAndType(getUri(file), "image/*");
             intent.putExtra("crop", "true");
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);
@@ -227,6 +242,10 @@ public class AlbumActivity extends AppCompatActivity {
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             intent.putExtra("noFaceDetection", true);
             intent.putExtra("return-data", true);
+            if (Build.VERSION.SDK_INT >= 24) {
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
             startActivityForResult(intent, INTENT_ZOOM);
         }
     }
@@ -248,7 +267,7 @@ public class AlbumActivity extends AppCompatActivity {
         if (resultCode != RESULT_OK) return;
         switch (requestCode) {
             case INTENT_CAMERA:
-                startZoom(Uri.fromFile(new File(getExternalCacheDir(), getString(R.string.ysq_album_original))));
+                startZoom(new File(getExternalCacheDir(), getString(R.string.ysq_album_original)));
                 break;
             case INTENT_ZOOM:
                 Intent intent = new Intent();
