@@ -22,6 +22,12 @@ public class PreviewViewPager extends ViewPager {
     }
 
     @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        setPadding(getPaddingLeft(), 0, getPaddingRight(), getPaddingBottom());
+        super.onLayout(changed, l, t, r, b);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         try {
             return super.onInterceptTouchEvent(ev);

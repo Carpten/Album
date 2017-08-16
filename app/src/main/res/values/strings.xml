@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Album</string>
     <string name="action_edit">修改资料</string>
-    <string name="picture_select">图片选择</string>
+    <string name="picture_multi_select">多个图片选择</string>
+    <string name="picture_single_select">单个图片选择</string>
     <string name="portrait_upload">头像上传</string>
     <string name="picture_browse">图片浏览</string>
     <string name="picture_select_num" formatted="false">选中%d张</string>

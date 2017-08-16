@@ -21,7 +21,7 @@ import java.util.List;
  * Date:2017/4/14.
  */
 
-public class AlbumAdapter extends Adapter implements View.OnClickListener {
+public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
 
     private AlbumActivity mAlbumActivity;
 
@@ -29,7 +29,7 @@ public class AlbumAdapter extends Adapter implements View.OnClickListener {
 
     private int mBucketIndex;
 
-    public AlbumAdapter(AlbumActivity albumActivity,int bucketIndex) {
+    public AlbumAdapter2(AlbumActivity albumActivity, int bucketIndex) {
         mAlbumActivity = albumActivity;
         mBucketIndex = bucketIndex;
         mImageBeen = AlbumActivity.albumPicker.getBuckets().get(bucketIndex).getImageBeen();
@@ -57,7 +57,7 @@ public class AlbumAdapter extends Adapter implements View.OnClickListener {
             Glide.clear(((VH) holder).imageView);
             Glide.with(mAlbumActivity).load(mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path())
                     .placeholder(R.drawable.ic_album_default).centerCrop().into(((VH) holder).imageView);
-            ((VH) holder).imageView.setTag(R.id.tag_position, mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path());
+            ((VH) holder).imageView.setTag(R.id.tag_path, mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path());
             ((VH) holder).imageView.setOnClickListener(this);
 
         }
@@ -66,7 +66,7 @@ public class AlbumAdapter extends Adapter implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        String path = (String) v.getTag(R.id.tag_position);
+        String path = (String) v.getTag(R.id.tag_path);
         mAlbumActivity.startZoom(Uri.fromFile(new File(path)));
     }
 

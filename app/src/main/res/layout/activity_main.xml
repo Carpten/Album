@@ -20,12 +20,12 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
 
         <Button
             style="?android:attr/borderlessButtonStyle"
@@ -35,8 +35,20 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="16dp"
             android:background="@drawable/btn_selector"
-            android:onClick="picSelect"
-            android:text="@string/picture_select" />
+            android:onClick="picSingleSelect"
+            android:text="@string/picture_single_select" />
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_selector"
+            android:onClick="picMultiSelect"
+            android:text="@string/picture_multi_select" />
+
 
         <Button
             style="?android:attr/borderlessButtonStyle"

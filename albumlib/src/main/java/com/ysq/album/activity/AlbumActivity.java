@@ -25,8 +25,9 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ysq.album.R;
-import com.ysq.album.adapter.AlbumAdapter;
 import com.ysq.album.adapter.AlbumAdapter0;
+import com.ysq.album.adapter.AlbumAdapter1;
+import com.ysq.album.adapter.AlbumAdapter2;
 import com.ysq.album.adapter.AlbumBucketAdapter;
 import com.ysq.album.bean.BucketBean;
 import com.ysq.album.bean.ImageBean;
@@ -59,9 +60,13 @@ public class AlbumActivity extends AppCompatActivity {
 
     public static final int INTENT_PREVIEW = 102;
 
-    public static final int MODE_SELECT = 0;
+    public static final int INTENT_SINGLE_SELECT = 103;
 
-    public static final int MODE_PORTRAIT = 1;
+    public static final int MODE_MULTI_SELECT = 0;
+
+    public static final int MODE_SINGLE_SELECT = 1;
+
+    public static final int MODE_PORTRAIT = 2;
 
     private static final int SPAN_COUNT = 4;
 
@@ -74,18 +79,17 @@ public class AlbumActivity extends AppCompatActivity {
     private int mMode;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ysq_activity_album);
-        mMode = getIntent().getIntExtra(ARG_MODE, MODE_SELECT);
+        mMode = getIntent().getIntExtra(ARG_MODE, MODE_MULTI_SELECT);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         View bottomView = findViewById(R.id.bottom);
-        bottomView.setVisibility(mMode == MODE_SELECT ? View.VISIBLE : View.GONE);
+        bottomView.setVisibility(mMode == MODE_MULTI_SELECT ? View.VISIBLE : View.GONE);
         invalidateOptionsMenu();
         if (ContextCompat.checkSelfPermission(AlbumActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -174,10 +178,13 @@ public class AlbumActivity extends AppCompatActivity {
         }
         List<BucketBean> buckets = albumPicker.getBuckets();
         ((TextView) findViewById(R.id.tv_bucket_name)).setText(buckets.get(bucketIndex).getBucket_name());
-        if (mMode == MODE_PORTRAIT)
-            mRecyclerView.setAdapter(new AlbumAdapter(AlbumActivity.this, bucketIndex));
-        else
+        if (mMode == MODE_MULTI_SELECT)
             mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex));
+        else if (mMode == MODE_SINGLE_SELECT)
+            mRecyclerView.setAdapter(new AlbumAdapter1(AlbumActivity.this, bucketIndex));
+        else
+            mRecyclerView.setAdapter(new AlbumAdapter2(AlbumActivity.this, bucketIndex));
+
     }
 
     public void takePhoto() {
@@ -227,7 +234,6 @@ public class AlbumActivity extends AppCompatActivity {
     public void startPreview(View view) {
         if (albumPicker.getSelectImages().size() > 0) {
             Intent intent = new Intent(AlbumActivity.this, AlbumPreviewActivity.class);
-            intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumPreviewActivity.MODE_PREVIEW);
             startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
         }
     }
@@ -253,6 +259,10 @@ public class AlbumActivity extends AppCompatActivity {
             case INTENT_PREVIEW:
                 refreshSelectNum();
                 break;
+            case INTENT_SINGLE_SELECT:
+                setResult(RESULT_OK, data);
+                finish();
+                break;
         }
     }
 
@@ -260,7 +270,7 @@ public class AlbumActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.ysq_menu_done, menu);
-        menu.findItem(R.id.action_done).setVisible(mMode == MODE_SELECT);
+        menu.findItem(R.id.action_done).setVisible(mMode == MODE_MULTI_SELECT);
         return true;
     }
 

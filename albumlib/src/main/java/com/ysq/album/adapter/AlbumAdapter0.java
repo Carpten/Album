@@ -88,6 +88,7 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
         Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
         intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
         intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
+        intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumActivity.MODE_MULTI_SELECT);
         mAlbumActivity.startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
     }
 
@@ -119,10 +120,9 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
     }
 
 
-    @SuppressWarnings("WeakerAccess")
     public class VH extends RecyclerView.ViewHolder {
         ImageView imageView;
-        public AlbumCheckBox checkBox;
+        AlbumCheckBox checkBox;
         View mask;
 
         private VH(View itemView) {

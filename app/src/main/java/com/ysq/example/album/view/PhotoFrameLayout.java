@@ -249,7 +249,6 @@ public class PhotoFrameLayout extends FrameLayout implements ScaleGestureDetecto
                     minY = startY - (int) (getHeight() * mTotalScaleFactor / 2 + ih * mTotalScaleFactor / 2 - getHeight() + layoutParams.topMargin);
                     maxY = startY - (int) ((getHeight() * mTotalScaleFactor - ih * mTotalScaleFactor) / 2 + layoutParams.topMargin);
                 } else {
-                    Log.i("test", "oh my god");
                     minY = startY;
                     maxY = startY;
                 }
