@@ -11,5 +11,5 @@
     <string name="ysq_album_zoom">ysq_album_zoom.alm</string>
     <string name="ysq_dialog_positive">确定</string>
     <string name="permissions_read_external_storage_deny">访问相册需要读权限，请在应用权限中设置</string>
-    <string name="permissions_carmea_deny">访问相机需要相机权限，请在应用权限中设置</string>
+    <string name="permissions_carmea_deny">拍照需要相机权限，请在应用权限中设置</string>
 </resources>
