@@ -206,7 +206,7 @@ public class AlbumActivity extends AppCompatActivity {
             return Uri.fromFile(file);
         } else {
             return getUriForFile(AlbumActivity.this,
-                    "com.ysq.album.fileprovider", file);
+                    getPackageName() + ".ysq.fileprovider", file);
         }
     }
 
