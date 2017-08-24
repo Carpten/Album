@@ -1,7 +1,12 @@
 package com.ysq.example.album.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -20,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.ysq.example.album.R;
 import com.ysq.example.album.adapter.BrowseAdapter;
 import com.ysq.example.album.transition.AlbumEnterTransition;
+import com.ysq.example.album.transition.AlbumEnterV21Transition;
 import com.ysq.example.album.transition.SimpleTransitionListener;
 import com.ysq.example.album.view.PhotoFrameLayout;
 import com.ysq.example.album.view.PreviewViewPager;
@@ -44,7 +50,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
         }
         setContentView(R.layout.activity_preview);
@@ -63,6 +69,15 @@ public class PreviewActivity extends AppCompatActivity {
                             mViewPager.setScrollEnable(true);
                         }
                     }));
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setSharedElementEnterTransition(new AlbumEnterV21Transition(PreviewActivity.this, options.outWidth, options.outHeight, mIndex)
+                    .addTarget(getString(R.string.transition_name, mIndex)).setDuration(getResources().getInteger(R.integer.scene_duration_in)).addListener(new SimpleTransitionListener() {
+                        @Override
+                        public void onTransitionEnd(Transition transition) {
+                            mIniting = false;
+                            mViewPager.setScrollEnable(true);
+                        }
+                    }));
         }
     }
 
@@ -70,7 +85,7 @@ public class PreviewActivity extends AppCompatActivity {
     private void setupViewPager() {
         mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setCurrentItem(mIndex);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             mViewPager.setScrollEnable(false);
     }
 
@@ -91,17 +106,22 @@ public class PreviewActivity extends AppCompatActivity {
             imageview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageview.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageview.setTag(R.id.tag_position, position);
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 imageview.setTransitionName(container.getContext().getString(R.string.transition_name, position));
                 if (position == mIndex && mIniting) {
                     setStartPostTransition(imageview);
                 }
             }
             if (mIniting && position == mIndex) {
-                BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
-                        .findViewHolderForLayoutPosition(mIndex);
-                Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
-                        .placeholder(viewholder.imageView.getDrawable()).dontAnimate().fitCenter().into(imageview);
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP)
+                    Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
+                            .placeholder(new BitmapDrawable(getResources(), getBitmap())).dontAnimate().fitCenter().into(imageview);
+                else {
+                    BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
+                            .findViewHolderForLayoutPosition(mIndex);
+                    Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
+                            .placeholder(viewholder.imageView.getDrawable()).dontAnimate().fitCenter().into(imageview);
+                }
             } else
                 Glide.with(PreviewActivity.this).load(BrowseAdapter.BROWSE_IDS[position])
                         .fitCenter().into(imageview);
@@ -119,6 +139,20 @@ public class PreviewActivity extends AppCompatActivity {
         }
     };
 
+    private Bitmap getBitmap() {
+        BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
+                .findViewHolderForLayoutPosition(mIndex);
+        Drawable drawable = viewholder.imageView.getDrawable();
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
     @Override
     public void finishAfterTransition() {
         int currentItem = mViewPager.getCurrentItem();
@@ -126,7 +160,7 @@ public class PreviewActivity extends AppCompatActivity {
         intent.putExtra(ARG_INDEX, currentItem);
         setResult(RESULT_OK, intent);
         String transitionName = getString(R.string.transition_name, currentItem);
-        if (Build.VERSION.SDK_INT >Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             for (int i = 0; i < mViewPager.getChildCount(); i++) {
                 if (transitionName.equals(((FrameLayout) mViewPager.getChildAt(i)).getChildAt(0).getTransitionName())) {
                     BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
@@ -143,7 +177,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (Build.VERSION.SDK_INT >Build.VERSION_CODES.LOLLIPOP && !mIniting) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !mIniting) {
             if (mViewPager.isIdle()) {
                 mViewPager.setScrollEnable(false);
                 super.onBackPressed();
@@ -155,7 +189,7 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                 });
             }
-        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             super.onBackPressed();
         }
     }
