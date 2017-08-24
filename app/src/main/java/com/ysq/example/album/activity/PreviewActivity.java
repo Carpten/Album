@@ -44,7 +44,7 @@ public class PreviewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
         }
         setContentView(R.layout.activity_preview);
@@ -54,7 +54,7 @@ public class PreviewActivity extends AppCompatActivity {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(getResources(), BrowseAdapter.BROWSE_IDS[mIndex], options);
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setSharedElementEnterTransition(new AlbumEnterTransition(PreviewActivity.this, options.outWidth, options.outHeight)
                     .addTarget(getString(R.string.transition_name, mIndex)).setDuration(getResources().getInteger(R.integer.scene_duration_in)).addListener(new SimpleTransitionListener() {
                         @Override
@@ -70,7 +70,7 @@ public class PreviewActivity extends AppCompatActivity {
     private void setupViewPager() {
         mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setCurrentItem(mIndex);
-        if (Build.VERSION.SDK_INT >= 21)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)
             mViewPager.setScrollEnable(false);
     }
 
@@ -91,7 +91,7 @@ public class PreviewActivity extends AppCompatActivity {
             imageview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageview.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageview.setTag(R.id.tag_position, position);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 imageview.setTransitionName(container.getContext().getString(R.string.transition_name, position));
                 if (position == mIndex && mIniting) {
                     setStartPostTransition(imageview);
@@ -126,7 +126,7 @@ public class PreviewActivity extends AppCompatActivity {
         intent.putExtra(ARG_INDEX, currentItem);
         setResult(RESULT_OK, intent);
         String transitionName = getString(R.string.transition_name, currentItem);
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >Build.VERSION_CODES.LOLLIPOP) {
             for (int i = 0; i < mViewPager.getChildCount(); i++) {
                 if (transitionName.equals(((FrameLayout) mViewPager.getChildAt(i)).getChildAt(0).getTransitionName())) {
                     BrowseAdapter.VH viewholder = (BrowseAdapter.VH) BrowseAdapter.mWeakRecyclerViewRef.get()
@@ -143,7 +143,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (Build.VERSION.SDK_INT >= 21 && !mIniting) {
+        if (Build.VERSION.SDK_INT >Build.VERSION_CODES.LOLLIPOP && !mIniting) {
             if (mViewPager.isIdle()) {
                 mViewPager.setScrollEnable(false);
                 super.onBackPressed();
@@ -155,7 +155,7 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                 });
             }
-        } else if (Build.VERSION.SDK_INT <= 21) {
+        } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             super.onBackPressed();
         }
     }

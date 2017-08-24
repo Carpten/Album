@@ -69,7 +69,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
                 .override(picW, picH).into(holder.imageView);
         holder.imageView.setTag(R.id.tag_position, position);
         holder.imageView.setOnClickListener(this);
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             String transitionName = mActivity.getString(R.string.transition_name, position);
             holder.imageView.setTransitionName(transitionName);
             holder.imageView.setTag(R.id.tag_transition_name, transitionName);
@@ -88,8 +88,12 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
             intent.putExtra(PreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
             String tag = (String) v.getTag(R.id.tag_transition_name);
             mActivity.setExitSharedElementCallback((SharedElementCallback) null);
-            ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, v, tag);
-            mActivity.startActivity(intent, activityOptions.toBundle());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(mActivity, v, tag);
+                mActivity.startActivity(intent, activityOptions.toBundle());
+            } else {
+                mActivity.startActivity(intent);
+            }
         }
     }
 

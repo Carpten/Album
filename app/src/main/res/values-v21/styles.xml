@@ -7,13 +7,4 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="AppTheme.PreviewTheme">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSharedElementReturnTransition">
-            @transition/preview_return_transition
-        </item>
-    </style>
-
 </resources>
