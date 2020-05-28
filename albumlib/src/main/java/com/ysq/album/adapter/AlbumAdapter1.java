@@ -42,7 +42,6 @@ public class AlbumAdapter1 extends Adapter<AlbumAdapter1.VH> implements View.OnC
 
     @Override
     public void onBindViewHolder(final AlbumAdapter1.VH holder, int position) {
-        Glide.clear(holder.imageView);
         Glide.with(mAlbumActivity).load(mImageBeen.get(position).getImage_path())
                 .placeholder(R.drawable.ic_album_default).centerCrop().into(holder.imageView);
         holder.imageView.setTag(R.id.tag_position, position);

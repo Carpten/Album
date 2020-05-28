@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +12,15 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
@@ -61,18 +65,18 @@ public class PersonalActivity extends AppCompatActivity {
         mToolbar.getChildAt(0).setAlpha(0);
         mToolbar.getChildAt(0).setScaleX(0.8f);
         mObservableScrollView.setScrollViewCallbacks(mObservableScrollViewCallbacks);
-        Glide.with(PersonalActivity.this).load(R.mipmap.ic_default_portrait).asBitmap().placeholder(R.drawable.ic_placeholder)
+        Glide.with(this).asBitmap().load(R.mipmap.ic_default_portrait).placeholder(R.drawable.ic_placeholder)
                 .listener(mGlideRequestListener).centerCrop().into(mIvPortrait);
     }
 
-    private RequestListener<Object, Bitmap> mGlideRequestListener = new RequestListener<Object, Bitmap>() {
+    private RequestListener<Bitmap> mGlideRequestListener = new RequestListener<Bitmap>() {
         @Override
-        public boolean onException(Exception e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
             return false;
         }
 
         @Override
-        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
             Bitmap blurBitmap = resource.copy(resource.getConfig(), true);
             float[] colorArray = {0.8f, 0, 0, 0, 0, 0, 0.8f, 0, 0, 0, 0, 0, 0.8f, 0, 0, 0, 0, 0, 1, 0};
             mIvHeadBackground.setImageBitmap(BitmapUtil.getColorBitmap(StackBlur.blurNatively(BitmapUtil.getScaleBitmap(blurBitmap, 8), 6, true), colorArray));
@@ -204,9 +208,10 @@ public class PersonalActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             String path = data.getStringExtra(AlbumActivity.ARG_PATH);
-            Glide.with(PersonalActivity.this).load(new File(path)).asBitmap().skipMemoryCache(true)
+            Glide.with(PersonalActivity.this).asBitmap().load(new File(path)).skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.NONE).listener(mGlideRequestListener)
                     .centerCrop().into(mIvPortrait);
         }

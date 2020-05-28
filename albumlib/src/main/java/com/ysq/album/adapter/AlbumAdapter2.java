@@ -53,7 +53,6 @@ public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VH) {
-            Glide.clear(((VH) holder).imageView);
             Glide.with(mAlbumActivity).load(mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path())
                     .placeholder(R.drawable.ic_album_default).centerCrop().into(((VH) holder).imageView);
             ((VH) holder).imageView.setTag(R.id.tag_path, mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path());

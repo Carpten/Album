@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.app.SharedElementCallback;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +55,6 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
-        Glide.clear(holder.imageView);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(mActivity.getResources(), BROWSE_IDS[position], options);
