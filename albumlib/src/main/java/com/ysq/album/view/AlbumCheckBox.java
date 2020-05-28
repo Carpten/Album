@@ -11,7 +11,7 @@ import com.ysq.album.activity.AlbumActivity;
  * Date:2017/7/4.
  */
 
-public class AlbumCheckBox extends android.support.v7.widget.AppCompatCheckBox {
+public class AlbumCheckBox extends androidx.appcompat.widget.AppCompatCheckBox {
 
 
     private OnCannotCheckMoreListener mOnCannotCheckMoreListener;
