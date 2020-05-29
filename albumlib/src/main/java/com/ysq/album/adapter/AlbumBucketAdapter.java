@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.bean.BucketBean;
@@ -38,7 +39,10 @@ public class AlbumBucketAdapter extends RecyclerView.Adapter<AlbumBucketAdapter.
     @Override
     public void onBindViewHolder(final VH holder, int position) {
         holder.name.setText(String.format(mAlbumActivity.getString(R.string.ysq_switch_bucket_item), mBuckets.get(position).getBucket_name(), mBuckets.get(position).getImageBeen().size()));
-        Glide.with(mAlbumActivity).load(mBuckets.get(position).getImageBeen().get(0).getImage_path()).placeholder(R.drawable.ic_album_default).centerCrop().into(holder.imageView);
+        Glide.with(mAlbumActivity).load(mBuckets.get(position).getImageBeen().get(0).getImage_path())
+                .placeholder(R.drawable.ic_album_default)
+                .transition(DrawableTransitionOptions.withCrossFade(400))
+                .centerCrop().into(holder.imageView);
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(this);
     }

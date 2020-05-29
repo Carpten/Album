@@ -1,9 +1,13 @@
 package com.ysq.album.adapter;
 
 import android.content.Intent;
+
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +60,9 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     @Override
     public void onBindViewHolder(final AlbumAdapter0.VH holder, int position) {
+        Glide.with(mAlbumActivity).clear(holder.imageView);
         Glide.with(mAlbumActivity).load(mImageBeen.get(position).getImage_path())
+                .transition(DrawableTransitionOptions.withCrossFade(400))
                 .placeholder(R.drawable.ic_album_default).centerCrop().into(holder.imageView);
         holder.imageView.setTag(R.id.tag_position, position);
         holder.imageView.setOnClickListener(this);

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.activity.AlbumPreviewActivity;
@@ -42,8 +43,11 @@ public class AlbumAdapter1 extends Adapter<AlbumAdapter1.VH> implements View.OnC
 
     @Override
     public void onBindViewHolder(final AlbumAdapter1.VH holder, int position) {
+        Glide.with(mAlbumActivity).clear(holder.imageView);
         Glide.with(mAlbumActivity).load(mImageBeen.get(position).getImage_path())
-                .placeholder(R.drawable.ic_album_default).centerCrop().into(holder.imageView);
+                .placeholder(R.drawable.ic_album_default)
+                .transition(DrawableTransitionOptions.withCrossFade(400))
+                .centerCrop().into(holder.imageView);
         holder.imageView.setTag(R.id.tag_position, position);
         holder.imageView.setOnClickListener(this);
     }

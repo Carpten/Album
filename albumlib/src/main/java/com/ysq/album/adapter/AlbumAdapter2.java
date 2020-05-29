@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.bean.ImageBean0;
@@ -53,8 +54,11 @@ public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VH) {
+            Glide.with(mAlbumActivity).clear(((VH) holder).imageView);
             Glide.with(mAlbumActivity).load(mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path())
-                    .placeholder(R.drawable.ic_album_default).centerCrop().into(((VH) holder).imageView);
+                    .placeholder(R.drawable.ic_album_default)
+                    .transition(DrawableTransitionOptions.withCrossFade(400))
+                    .centerCrop().into(((VH) holder).imageView);
             ((VH) holder).imageView.setTag(R.id.tag_path, mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path());
             ((VH) holder).imageView.setOnClickListener(this);
 

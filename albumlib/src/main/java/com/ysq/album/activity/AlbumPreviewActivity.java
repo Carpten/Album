@@ -2,6 +2,8 @@ package com.ysq.album.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.viewpager.widget.PagerAdapter;
@@ -116,7 +118,9 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
             imageview.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageview.setTag(R.id.tag_position, position);
             imageview.setOnClickListener(AlbumPreviewActivity.this);
-            Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path()).fitCenter().into(imageview);
+            Glide.with(AlbumPreviewActivity.this).load(mImageBeen.get(position).getImage_path())
+                    .transition(DrawableTransitionOptions.withCrossFade(400))
+                    .fitCenter().into(imageview);
             container.addView(imageview);
             return imageview;
         }

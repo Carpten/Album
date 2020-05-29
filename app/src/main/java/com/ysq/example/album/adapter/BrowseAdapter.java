@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.ysq.example.album.R;
 import com.ysq.example.album.activity.BrowseActivity;
 import com.ysq.example.album.activity.PreviewActivity;
@@ -55,6 +56,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
+        Glide.with(mActivity).clear(holder.imageView);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(mActivity.getResources(), BROWSE_IDS[position], options);
@@ -67,7 +69,9 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.VH> implem
             picH = Math.round((float) mPicSize * (float) options.outHeight / (float) options.outWidth);
         }
         Glide.with(mActivity).load(BROWSE_IDS[position]).placeholder(R.drawable.ic_placeholder)
-                .override(picW, picH).into(holder.imageView);
+                .override(picW, picH)
+                .transition(DrawableTransitionOptions.withCrossFade(500))
+                .into(holder.imageView);
         holder.imageView.setTag(R.id.tag_position, position);
         holder.imageView.setOnClickListener(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
