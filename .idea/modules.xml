@@ -6,6 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/albumlib/Album-albumlib.iml" filepath="$PROJECT_DIR$/albumlib/Album-albumlib.iml" group="Album/albumlib" />
       <module fileurl="file://$PROJECT_DIR$/app/Album-app.iml" filepath="$PROJECT_DIR$/app/Album-app.iml" group="Album/app" />
       <module fileurl="file://$PROJECT_DIR$/AndroidStudioProjects-Album.iml" filepath="$PROJECT_DIR$/AndroidStudioProjects-Album.iml" group="Album" />
+      <module fileurl="file://$PROJECT_DIR$/albumlib/AndroidStudioProjects-Album-albumlib.iml" filepath="$PROJECT_DIR$/albumlib/AndroidStudioProjects-Album-albumlib.iml" group="Album/albumlib" />
+      <module fileurl="file://$PROJECT_DIR$/app/AndroidStudioProjects-Album-app.iml" filepath="$PROJECT_DIR$/app/AndroidStudioProjects-Album-app.iml" group="Album/app" />
+      <module fileurl="file://$PROJECT_DIR$/Projects-AndroidStudioProjects-Album.iml" filepath="$PROJECT_DIR$/Projects-AndroidStudioProjects-Album.iml" group="Album" />
       <module fileurl="file://$PROJECT_DIR$/albumlib/albumlib.iml" filepath="$PROJECT_DIR$/albumlib/albumlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
