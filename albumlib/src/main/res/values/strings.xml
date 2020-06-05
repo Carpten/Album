@@ -7,7 +7,7 @@
     <string name="ysq_done">确定</string>
     <string name="ysq_preview">预览</string>
     <string name="ysq_choose_num" formatted="false">已选中 %d/%d</string>
-    <string name="ysq_album_original">ysq_album_original.alm</string>
+    <string name="ysq_album_original">ysq_album_original.jpg</string>
     <string name="ysq_album_zoom">ysq_album_zoom.jpg</string>
     <string name="ysq_dialog_positive">确定</string>
     <string name="permissions_read_external_storage_deny">访问相册需要读权限，请在应用权限中设置</string>

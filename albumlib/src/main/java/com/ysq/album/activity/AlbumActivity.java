@@ -236,12 +236,12 @@ public class AlbumActivity extends AppCompatActivity {
             intent.putExtra("crop", "true");
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);
-            intent.putExtra("outputX", 320);
-            intent.putExtra("outputY", 320);
+            intent.putExtra("outputX", 828);
+            intent.putExtra("outputY", 828);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(getExternalCacheDir(), getString(R.string.ysq_album_zoom))));
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             intent.putExtra("noFaceDetection", true);
-            intent.putExtra("return-data", true);
+            intent.putExtra("return-data", false);
             if (Build.VERSION.SDK_INT >= 24) {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -264,6 +264,7 @@ public class AlbumActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) return;
         switch (requestCode) {
             case INTENT_CAMERA:
