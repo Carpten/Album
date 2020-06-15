@@ -105,7 +105,7 @@ public class PhotoUtils {
     }
 
 
-    protected void onActivityResult(Activity activity, int requestCode, int resultCode, ResultListener resultListener) {
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, ResultListener resultListener) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case INTENT_CAMERA:
