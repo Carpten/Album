@@ -83,7 +83,7 @@ public class PhotoUtils {
     /**
      * 裁剪图片方法实现
      */
-    private void startZoom(Activity activity, File file) {
+    private static void startZoom(Activity activity, File file) {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent("com.android.camera.action.CROP");
             intent.setDataAndType(getUri(activity, file), "image/*");
@@ -105,7 +105,7 @@ public class PhotoUtils {
     }
 
 
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, ResultListener resultListener) {
+    public static void onActivityResult(Activity activity, int requestCode, int resultCode, ResultListener resultListener) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case INTENT_CAMERA:
