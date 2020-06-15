@@ -10,18 +10,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -71,6 +72,10 @@ public class AlbumActivity extends AppCompatActivity {
 
     public static final int MODE_PORTRAIT = 2;
 
+    public static final int MODE_PORTRAIT_WITHOUT_PHOTO = 3;
+
+    public static final int MODE_PORTRAIT_JUST_PHOTO = 4;
+
     private static final int SPAN_COUNT = 4;
 
     private static final int DEFAULT_MAX_COUNT = 9;
@@ -84,8 +89,8 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ysq_activity_album);
         mMode = getIntent().getIntExtra(ARG_MODE, MODE_MULTI_SELECT);
+        setContentView(R.layout.ysq_activity_album);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
@@ -185,8 +190,10 @@ public class AlbumActivity extends AppCompatActivity {
             mRecyclerView.setAdapter(new AlbumAdapter0(AlbumActivity.this, bucketIndex));
         else if (mMode == MODE_SINGLE_SELECT)
             mRecyclerView.setAdapter(new AlbumAdapter1(AlbumActivity.this, bucketIndex));
-        else
-            mRecyclerView.setAdapter(new AlbumAdapter2(AlbumActivity.this, bucketIndex));
+        else if (mMode == MODE_PORTRAIT)
+            mRecyclerView.setAdapter(new AlbumAdapter2(AlbumActivity.this, bucketIndex, 0));
+        else if (mMode == MODE_PORTRAIT_WITHOUT_PHOTO)
+            mRecyclerView.setAdapter(new AlbumAdapter2(AlbumActivity.this, bucketIndex, 1));
 
     }
 
@@ -213,6 +220,7 @@ public class AlbumActivity extends AppCompatActivity {
     public void startPhoto() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra("camerasensortype", 2);
             File file = new File(getExternalCacheDir(), getString(R.string.ysq_album_original));
             intent.putExtra(MediaStore.EXTRA_OUTPUT, getUri(file));
             if (Build.VERSION.SDK_INT >= 24) {

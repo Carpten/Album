@@ -1,11 +1,12 @@
 package com.ysq.album.adapter;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -28,16 +29,18 @@ public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
     private List<ImageBean0> mImageBeen;
 
     private int mBucketIndex;
+    private int mModel;
 
-    public AlbumAdapter2(AlbumActivity albumActivity, int bucketIndex) {
+    public AlbumAdapter2(AlbumActivity albumActivity, int bucketIndex, int mode) {
         mAlbumActivity = albumActivity;
         mBucketIndex = bucketIndex;
         mImageBeen = AlbumActivity.albumPicker.getBuckets().get(bucketIndex).getImageBeen();
+        mModel = mode;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (mBucketIndex == 0 && position == 0)
+        if (mBucketIndex == 0 && position == 0 && mModel == 0)
             return 0;
         else
             return 1;
@@ -55,11 +58,11 @@ public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VH) {
             Glide.with(mAlbumActivity).clear(((VH) holder).imageView);
-            Glide.with(mAlbumActivity).load(mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path())
+            Glide.with(mAlbumActivity).load(mImageBeen.get(position - ((mBucketIndex == 0 && mModel == 0) ? 1 : 0)).getImage_path())
                     .placeholder(R.drawable.ic_album_default)
                     .transition(DrawableTransitionOptions.withCrossFade(400))
                     .centerCrop().into(((VH) holder).imageView);
-            ((VH) holder).imageView.setTag(R.id.tag_path, mImageBeen.get(position - (mBucketIndex == 0 ? 1 : 0)).getImage_path());
+            ((VH) holder).imageView.setTag(R.id.tag_path, mImageBeen.get(position - ((mBucketIndex == 0 && mModel == 0) ? 1 : 0)).getImage_path());
             ((VH) holder).imageView.setOnClickListener(this);
 
         }
@@ -74,7 +77,7 @@ public class AlbumAdapter2 extends Adapter implements View.OnClickListener {
 
     @Override
     public int getItemCount() {
-        return mImageBeen.size() + (mBucketIndex == 0 ? 1 : 0);
+        return mImageBeen.size() + ((mBucketIndex == 0 && mModel == 0) ? 1 : 0);
     }
 
     private class VH0 extends RecyclerView.ViewHolder {
