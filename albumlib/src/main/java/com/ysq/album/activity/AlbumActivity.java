@@ -220,7 +220,7 @@ public class AlbumActivity extends AppCompatActivity {
     public void startPhoto() {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra("camerasensortype", 2);
+            intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
             File file = new File(getExternalCacheDir(), getString(R.string.ysq_album_original));
             intent.putExtra(MediaStore.EXTRA_OUTPUT, getUri(file));
             if (Build.VERSION.SDK_INT >= 24) {
