@@ -31,19 +31,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-            <!--            <com.ysq.album.view.AlbumCheckBox-->
-            <!--                android:id="@+id/checkbox"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_alignParentRight="true"-->
-            <!--                android:layout_centerVertical="true"-->
-            <!--                android:button="@drawable/ysq_checkbox_selector"-->
-            <!--                android:layout_marginRight="@dimen/activity_horizontal_margin"-->
-            <!--                android:src="@drawable/ic_check_circle_24dp"-->
-            <!--                android:textColor="@android:color/white"-->
-            <!--                tools:ignore="RtlHardcoded" />-->
-
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

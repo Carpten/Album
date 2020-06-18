@@ -229,7 +229,24 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
                 setResult(RESULT_OK, intent);
                 finish();
             } else {
-                if (AlbumActivity.albumPicker.getCurrentCount() > 0) {
+                if (AlbumActivity.albumPicker.getMaxCount() > 1) {
+                    if (AlbumActivity.albumPicker.getCurrentCount() > 0) {
+                        ArrayList<ImageBean> imageBeen = new ArrayList<>();
+                        for (ImageBean0 imageBean0 : AlbumActivity.albumPicker.getSelectImages()) {
+                            ImageBean imageBean = new ImageBean();
+                            imageBean.setImage_name(imageBean0.getImage_name());
+                            imageBean.setImage_path(imageBean0.getImage_path());
+                            imageBeen.add(imageBean);
+                        }
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(AlbumActivity.ARG_DATA, imageBeen);
+                        intent.putExtras(bundle);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                } else {
+                    AlbumActivity.albumPicker.add(mImageBeen.get(mViewPager.getCurrentItem()));
                     ArrayList<ImageBean> imageBeen = new ArrayList<>();
                     for (ImageBean0 imageBean0 : AlbumActivity.albumPicker.getSelectImages()) {
                         ImageBean imageBean = new ImageBean();

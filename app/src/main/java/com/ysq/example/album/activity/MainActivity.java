@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public void picMultiSelect(View view) {
         Intent intent = new Intent(MainActivity.this, AlbumActivity.class);
         intent.putExtra(AlbumActivity.ARG_MODE, AlbumActivity.MODE_MULTI_SELECT);
-        intent.putExtra(AlbumActivity.ARG_MAX_COUNT, 8);
+        intent.putExtra(AlbumActivity.ARG_MAX_COUNT, 1);
         Bundle bundle = new Bundle();
         bundle.putSerializable(AlbumActivity.ARG_DATA, mImageBeen);
         intent.putExtras(bundle);
