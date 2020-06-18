@@ -67,7 +67,7 @@
         <RelativeLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:layout_alignParentBottom="true"
             android:background="@color/ysq_album_bottom"
             tools:ignore="RtlHardcoded">

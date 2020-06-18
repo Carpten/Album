@@ -111,6 +111,17 @@ public class AlbumActivity extends AppCompatActivity {
 
 
     void initAlbum() {
+
+//        CameraManager cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+//        try {
+//            String[] cameraIdList = cameraManager.getCameraIdList();
+//            for (String i : cameraIdList) {
+//                Log.i("test", "i:" + i);
+//            }
+//        } catch (CameraAccessException e) {
+//
+//
+//        }
         albumPicker = new AlbumPicker(AlbumActivity.this, getIntent().getIntExtra(ARG_MAX_COUNT, DEFAULT_MAX_COUNT));
         @SuppressWarnings("unchecked") List<ImageBean> imageBeen = (List<ImageBean>) getIntent().getSerializableExtra(ARG_DATA);
         if (imageBeen != null && imageBeen.size() > 0)
@@ -221,6 +232,8 @@ public class AlbumActivity extends AppCompatActivity {
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+            intent.putExtra("android.intent.extras.CAMERA_FACING_FRONT", 1);
+            intent.putExtra("camerasensortype", 2); // 调用前置摄像头
             File file = new File(getExternalCacheDir(), getString(R.string.ysq_album_original));
             intent.putExtra(MediaStore.EXTRA_OUTPUT, getUri(file));
             if (Build.VERSION.SDK_INT >= 24) {
@@ -273,23 +286,32 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK) return;
         switch (requestCode) {
             case INTENT_CAMERA:
-                startZoom(new File(getExternalCacheDir(), getString(R.string.ysq_album_original)));
+                if (resultCode == RESULT_OK)
+                    startZoom(new File(getExternalCacheDir(), getString(R.string.ysq_album_original)));
                 break;
             case INTENT_ZOOM:
-                Intent intent = new Intent();
-                intent.putExtra(ARG_PATH, new File(getExternalCacheDir(), getString(R.string.ysq_album_zoom)).getPath());
-                setResult(RESULT_OK, intent);
-                finish();
+                if (resultCode == RESULT_OK) {
+                    Intent intent = new Intent();
+                    intent.putExtra(ARG_PATH, new File(getExternalCacheDir(), getString(R.string.ysq_album_zoom)).getPath());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
                 break;
             case INTENT_PREVIEW:
-                refreshSelectNum();
+                if (resultCode == RESULT_CANCELED) {
+                    refreshSelectNum();
+                } else {
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
                 break;
             case INTENT_SINGLE_SELECT:
-                setResult(RESULT_OK, data);
-                finish();
+                if (resultCode == RESULT_OK) {
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
                 break;
         }
     }

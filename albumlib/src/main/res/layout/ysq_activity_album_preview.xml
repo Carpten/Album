@@ -32,20 +32,57 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <com.ysq.album.view.AlbumCheckBox
-                android:id="@+id/checkbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:button="@drawable/ysq_checkbox_selector"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:src="@drawable/ic_check_circle_24dp"
-                android:textColor="@android:color/white"
-                tools:ignore="RtlHardcoded" />
+            <!--            <com.ysq.album.view.AlbumCheckBox-->
+            <!--                android:id="@+id/checkbox"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_alignParentRight="true"-->
+            <!--                android:layout_centerVertical="true"-->
+            <!--                android:button="@drawable/ysq_checkbox_selector"-->
+            <!--                android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+            <!--                android:src="@drawable/ic_check_circle_24dp"-->
+            <!--                android:textColor="@android:color/white"-->
+            <!--                tools:ignore="RtlHardcoded" />-->
 
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="#80000000"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@+id/tv_choose_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:textColor="@color/textWhite" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#48000000" />
+
+        <com.ysq.album.view.AlbumCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:button="@drawable/ysq_checkbox_selector"
+            android:src="@drawable/ic_check_circle_24dp"
+            android:textColor="@android:color/white"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

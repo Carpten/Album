@@ -2,16 +2,6 @@ package com.ysq.album.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -23,9 +13,20 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.ysq.album.R;
 import com.ysq.album.adapter.AlbumAdapter0;
 import com.ysq.album.bean.ImageBean;
@@ -57,6 +58,10 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
 
     private AppBarLayout mAppbarLayout;
 
+    private TextView mTvChooseNum;
+
+    private View mBottom;
+
     private int mMode;
 
     private boolean mIsFullScreen;
@@ -67,6 +72,9 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.ysq_activity_album_preview);
         mAppbarLayout = (AppBarLayout) findViewById(R.id.appbar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mBottom = findViewById(R.id.bottom);
+        mTvChooseNum = (TextView) findViewById(R.id.tv_choose_num);
+        mTvChooseNum.setText(getString(R.string.ysq_choose_num, AlbumActivity.albumPicker.getCurrentCount(), AlbumActivity.albumPicker.getMaxCount()));
         setSupportActionBar(toolbar);
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -175,6 +183,8 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
                 AlbumActivity.albumPicker.add(mImageBeen.get(mViewPager.getCurrentItem()));
             else
                 AlbumActivity.albumPicker.remove(mImageBeen.get(mViewPager.getCurrentItem()));
+
+            mTvChooseNum.setText(getString(R.string.ysq_choose_num, AlbumActivity.albumPicker.getCurrentCount(), AlbumActivity.albumPicker.getMaxCount()));
         }
     };
 
@@ -190,7 +200,7 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onBackPressed() {
         if (mMode != AlbumActivity.MODE_SINGLE_SELECT)
-            setResult(RESULT_OK);
+            setResult(RESULT_CANCELED);
         finish();
     }
 
@@ -198,7 +208,6 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.ysq_menu_done, menu);
-        menu.findItem(R.id.action_done).setVisible(getIntent().getIntExtra(ARG_MODE, -1) == AlbumActivity.MODE_SINGLE_SELECT);
         return true;
     }
 
@@ -209,15 +218,33 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
             onBackPressed();
             return true;
         } else if (i == R.id.action_done) {
-            ImageBean imageBean = new ImageBean();
-            imageBean.setImage_name(mImageBeen.get(mViewPager.getCurrentItem()).getImage_name());
-            imageBean.setImage_path(mImageBeen.get(mViewPager.getCurrentItem()).getImage_path());
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(AlbumActivity.ARG_DATA, imageBean);
-            intent.putExtras(bundle);
-            setResult(RESULT_OK, intent);
-            finish();
+            if (mMode == AlbumActivity.MODE_SINGLE_SELECT) {
+                ImageBean imageBean = new ImageBean();
+                imageBean.setImage_name(mImageBeen.get(mViewPager.getCurrentItem()).getImage_name());
+                imageBean.setImage_path(mImageBeen.get(mViewPager.getCurrentItem()).getImage_path());
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(AlbumActivity.ARG_DATA, imageBean);
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                finish();
+            } else {
+                if (AlbumActivity.albumPicker.getCurrentCount() > 0) {
+                    ArrayList<ImageBean> imageBeen = new ArrayList<>();
+                    for (ImageBean0 imageBean0 : AlbumActivity.albumPicker.getSelectImages()) {
+                        ImageBean imageBean = new ImageBean();
+                        imageBean.setImage_name(imageBean0.getImage_name());
+                        imageBean.setImage_path(imageBean0.getImage_path());
+                        imageBeen.add(imageBean);
+                    }
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(AlbumActivity.ARG_DATA, imageBeen);
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            }
             return true;
         } else
             return super.onOptionsItemSelected(item);
@@ -265,6 +292,12 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
             mAppbarLayout.setAnimation(animation);
             mAppbarLayout.setVisibility(View.VISIBLE);
             animation.start();
+
+            Animation animation1 = AnimationUtils.loadAnimation(AlbumPreviewActivity.this, R.anim.ysq_bottom_in);
+            animation1.setInterpolator(new LinearOutSlowInInterpolator());
+            mBottom.setAnimation(animation1);
+            mBottom.setVisibility(View.VISIBLE);
+            animation1.start();
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             mAppbarLayout.clearAnimation();
@@ -280,6 +313,29 @@ public class AlbumPreviewActivity extends AppCompatActivity implements View.OnCl
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     mAppbarLayout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+
+
+            mBottom.clearAnimation();
+            Animation animation1 = AnimationUtils.loadAnimation(AlbumPreviewActivity.this, R.anim.ysq_bottom_out);
+            animation1.setInterpolator(new LinearOutSlowInInterpolator());
+            mBottom.setAnimation(animation1);
+            animation1.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mBottom.setVisibility(View.GONE);
                 }
 
                 @Override
