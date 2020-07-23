@@ -46,7 +46,7 @@ public class PhotoUtils {
             return Uri.fromFile(file);
         } else {
             return getUriForFile(activity,
-                    activity.getPackageName() + ".ysq.fileprovider", file);
+                    activity.getPackageName() + ".fileprovider", file);
         }
     }
 
