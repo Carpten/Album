@@ -1,20 +1,18 @@
 package com.ysq.album.adapter;
 
 import android.content.Intent;
-
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.ysq.album.R;
 import com.ysq.album.activity.AlbumActivity;
 import com.ysq.album.activity.AlbumPreviewActivity;
@@ -71,17 +69,23 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     public void setCheckBox(VH holder) {
         holder.checkBox.setTag(R.id.tag_viewholder, holder);
-        if (holder.checkBox.isChecked() != mImageBeen.get(holder.getAdapterPosition()).isSelected()) {
-            holder.checkBox.setOnCheckedChangeListener(null);
-            holder.checkBox.setChecked(mImageBeen.get(holder.getAdapterPosition()).isSelected());
-            holder.checkBox.setOnCheckedChangeListener(this);
-            holder.checkBox.setOnCannotCheckMoreListener(this);
-            holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, mImageBeen
-                    .get(holder.getAdapterPosition()).isSelected() ? R.color.ysq_mask1 : R.color.ysq_mask0));
-        } else if (holder.checkBox.getOnCannotCheckMoreListener() == null) {
-            holder.checkBox.setOnCheckedChangeListener(this);
-            holder.checkBox.setOnCannotCheckMoreListener(this);
-        }
+        holder.checkBox.setImageResource(mImageBeen.get(holder.getAdapterPosition()).isSelected()
+                ? R.drawable.ysq_checked : R.drawable.ysq_unchecked);
+        holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, mImageBeen
+                .get(holder.getAdapterPosition()).isSelected() ? R.color.ysq_mask1 : R.color.ysq_mask0));
+        holder.checkBox.setOnClickListener(this);
+
+//        if (holder.checkBox.isChecked() != mImageBeen.get(holder.getAdapterPosition()).isSelected()) {
+//            holder.checkBox.setOnCheckedChangeListener(null);
+//            holder.checkBox.setChecked(mImageBeen.get(holder.getAdapterPosition()).isSelected());
+//            holder.checkBox.setOnCheckedChangeListener(this);
+//            holder.checkBox.setOnCannotCheckMoreListener(this);
+//            holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, mImageBeen
+//                    .get(holder.getAdapterPosition()).isSelected() ? R.color.ysq_mask1 : R.color.ysq_mask0));
+//        } else if (holder.checkBox.getOnCannotCheckMoreListener() == null) {
+//            holder.checkBox.setOnCheckedChangeListener(this);
+//            holder.checkBox.setOnCannotCheckMoreListener(this);
+//        }
     }
 
     public String getPicPath(VH viewHolder) {
@@ -90,11 +94,33 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     @Override
     public void onClick(final View v) {
-        Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
-        intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
-        intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
-        intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumActivity.MODE_MULTI_SELECT);
-        mAlbumActivity.startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
+        if (v.getId() == R.id.checkbox) {
+            AlbumAdapter0.VH holder = (VH) v.getTag(R.id.tag_viewholder);
+            if (!mImageBeen.get(holder.getAdapterPosition()).isSelected() && AlbumActivity.albumPicker.getCurrentCount() >= AlbumActivity.albumPicker.getMaxCount()) {
+                Snackbar.make(mAlbumActivity.getWindow().getDecorView()
+                        , mAlbumActivity.getString(R.string.ysq_cannot_select_more, AlbumActivity.albumPicker.getMaxCount())
+                        , Snackbar.LENGTH_SHORT).show();
+            } else {
+                if (!mImageBeen.get(holder.getAdapterPosition()).isSelected()) {
+                    mImageBeen.get(holder.getAdapterPosition()).setSelected(true);
+                    AlbumActivity.albumPicker.add(mImageBeen.get(holder.getAdapterPosition()));
+                } else {
+                    mImageBeen.get(holder.getAdapterPosition()).setSelected(false);
+                    AlbumActivity.albumPicker.remove(mImageBeen.get(holder.getAdapterPosition()));
+                }
+                holder.checkBox.setImageResource(mImageBeen.get(holder.getAdapterPosition()).isSelected()
+                        ? R.drawable.ysq_checked : R.drawable.ysq_unchecked);
+                holder.mask.setBackgroundColor(ContextCompat.getColor(mAlbumActivity, mImageBeen
+                        .get(holder.getAdapterPosition()).isSelected() ? R.color.ysq_mask1 : R.color.ysq_mask0));
+                mAlbumActivity.refreshSelectNum();
+            }
+        } else {
+            Intent intent = new Intent(mAlbumActivity, AlbumPreviewActivity.class);
+            intent.putExtra(AlbumPreviewActivity.ARG_BUCKET_INDEX, mBucketIndex);
+            intent.putExtra(AlbumPreviewActivity.ARG_INDEX, (int) v.getTag(R.id.tag_position));
+            intent.putExtra(AlbumPreviewActivity.ARG_MODE, AlbumActivity.MODE_MULTI_SELECT);
+            mAlbumActivity.startActivityForResult(intent, AlbumActivity.INTENT_PREVIEW);
+        }
     }
 
     @Override
@@ -127,13 +153,13 @@ public class AlbumAdapter0 extends RecyclerView.Adapter<AlbumAdapter0.VH> implem
 
     public class VH extends RecyclerView.ViewHolder {
         ImageView imageView;
-        AlbumCheckBox checkBox;
+        ImageView checkBox;
         View mask;
 
         private VH(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imageview);
-            checkBox = (AlbumCheckBox) itemView.findViewById(R.id.checkbox);
+            checkBox = (ImageView) itemView.findViewById(R.id.checkbox);
             mask = itemView.findViewById(R.id.mask);
             imageView.setDrawingCacheEnabled(true);
         }

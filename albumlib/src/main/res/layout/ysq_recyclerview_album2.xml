@@ -19,12 +19,13 @@
         android:background="@color/ysq_mask0" />
 
 
-    <com.ysq.album.view.AlbumCheckBox
+    <ImageView
         android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentRight="true"
-        android:theme="@style/AlbumCheckBox"
+        android:scaleType="centerInside"
+        android:src="@drawable/ysq_checked"
         tools:ignore="RtlHardcoded" />
 
 
