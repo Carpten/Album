@@ -257,8 +257,8 @@ public class AlbumActivity extends AppCompatActivity {
             intent.putExtra("crop", "true");
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);
-            intent.putExtra("outputX", 828);
-            intent.putExtra("outputY", 828);
+//            intent.putExtra("outputX", 800);
+//            intent.putExtra("outputY", 800);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(getExternalCacheDir(), getString(R.string.ysq_album_zoom))));
             intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
             intent.putExtra("noFaceDetection", true);
